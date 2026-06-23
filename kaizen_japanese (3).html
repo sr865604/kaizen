@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaizen Japanese - Aspirant Study Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        /* High-contrast and adjustable background overlay */
+        #bg-landscape {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            z-index: -2;
+            transition: opacity 0.5s ease, filter 0.5s ease;
+        }
+
+        #bg-gradient-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            transition: background 0.5s ease;
+        }
+
+        /* Light Theme defaults */
+        .theme-light {
+            background-color: #fff9fa;
+            color: #1e293b;
+        }
+        .theme-light #bg-landscape {
+            opacity: 0.04; /* Extremely faded for ultimate readability */
+            filter: grayscale(20%) blur(1px);
+        }
+        .theme-light #bg-gradient-overlay {
+            background: linear-gradient(135deg, rgba(255, 242, 245, 0.98), rgba(238, 242, 255, 0.98));
+        }
+        .theme-light .glass-panel {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.05);
+        }
+
+        /* Dark Theme defaults with highly visible, high-contrast text styles */
+        .theme-dark {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+        }
+        .theme-dark #bg-landscape {
+            opacity: 0.09; /* Balanced dark opacity */
+            filter: grayscale(40%) brightness(50%) blur(1.5px);
+        }
+        .theme-dark #bg-gradient-overlay {
+            background: linear-gradient(135deg, rgba(11, 15, 25, 0.98), rgba(17, 24, 39, 0.98));
+        }
+        .theme-dark .glass-panel {
+            background: rgba(20, 26, 43, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Bulletproof high-contrast visibility classes for Day/Night mode */
+        .theme-light .high-contrast-text {
+            color: #0f172a !important; /* Deep near-black slate */
+        }
+        .theme-dark .high-contrast-text {
+            color: #f8fafc !important; /* Soft white */
+        }
+        
+        .theme-light .high-contrast-subtext {
+            color: #334155 !important; /* High contrast slate */
+        }
+        .theme-dark .high-contrast-subtext {
+            color: #cbd5e1 !important; /* Crisp gray-silver */
+        }
+
+        #sakura-canvas, #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .hide { display: none !important; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .animate-shake {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        /* Card flip 3D styles */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Printable Calligraphy Sheets */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .print-break {
+                page-break-after: always;
+            }
+            .workbook-square {
+                border: 2px dashed #64748b !important;
+                height: 100px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                position: relative;
+            }
+            .workbook-square::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                border-top: 1px dotted #cbd5e1;
+            }
+            .workbook-square::before {
+                content: '';
+                position: absolute;
+                left: 50%;
+                top: 0;
+                bottom: 0;
+                border-left: 1px dotted #cbd5e1;
+            }
+        }
+        
+        .print-only {
+            display: none;
+        }
+    </style>
+</head>
+<body class="theme-light min-h-screen antialiased flex flex-col justify-between">
+
+    <!-- Backdrops -->
+    <div id="bg-landscape"></div>
+    <div id="bg-gradient-overlay"></div>
+
+    <!-- Ambient Animations -->
+    <canvas id="sakura-canvas" class="no-print"></canvas>
+    <canvas id="confetti-canvas" class="no-print"></canvas>
+
+    <div class="content-container flex-1 flex flex-col no-print">
+        
+        <!-- AUDIO COMPATIBILITY SETUP OVERLAY -->
+        <div id="audio-unlocker" class="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 text-center text-white transition-all duration-500">
+            <div class="bg-white text-slate-900 p-8 rounded-3xl max-w-md shadow-2xl border-2 border-pink-300">
+                <span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs font-black rounded-full uppercase tracking-wider mb-2 inline-block">Aspirant Project Setup</span>
+                <div class="w-20 h-20 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl animate-bounce">
+                    <i class="fa-solid fa-volume-high"></i>
+                </div>
+                <h3 class="text-2xl font-black mb-2 text-slate-900">Enable Voice Synthesis</h3>
+                <p class="text-sm text-slate-600 mb-6 leading-relaxed">
+                    Hello fellow Japan aspirant! Tap below to allow our browser-based slow speech synthesis engine to read letters and practice phrases aloud.
+                </p>
+                <button onclick="unlockSpeechSystem()" class="w-full bg-gradient-to-r from-pink-500 to-indigo-600 hover:from-pink-600 hover:to-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl transition duration-300 transform active:scale-95 shadow-lg cursor-pointer">
+                    🌸 Enable Voice & Start Exploring
+                </button>
+            </div>
+        </div>
+
+        <!-- HEADER -->
+        <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-pink-100 dark:border-slate-800 shadow-sm px-4 py-3 sm:py-4">
+            <div class="max-w-6xl mx-auto flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                
+                <div class="flex items-center justify-between w-full md:w-auto">
+                    <a href="#home" class="flex items-center gap-2 cursor-pointer group">
+                        <span class="w-10 h-10 bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md group-hover:rotate-6 transition-transform">改善</span>
+                        <div>
+                            <h1 class="font-black text-md sm:text-lg text-slate-950 dark:text-white tracking-tight leading-none">KAIZEN JAPANESE</h1>
+                            <span class="text-[10px] font-black text-pink-950 dark:text-pink-400 tracking-widest uppercase">By an Aspirant, For Aspirants</span>
+                        </div>
+                    </a>
+                    
+                    <!-- Dynamic Theme Selector & Mobile Print Action -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleTheme()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-950 dark:text-slate-200 p-2.5 rounded-xl transition cursor-pointer" title="Switch Theme">
+                            <i id="theme-icon" class="fa-solid fa-moon"></i>
+                        </button>
+                        <button onclick="printWorkbook()" class="md:hidden bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-3 rounded-lg shadow flex items-center gap-1.5 cursor-pointer transition">
+                            <i class="fa-solid fa-print"></i> PRINT KANA
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="flex items-center gap-1 overflow-x-auto pb-1 md:pb-0 scrollbar-none justify-start md:justify-center">
+                    <a href="#home" class="nav-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-black bg-pink-50 text-pink-700 dark:bg-pink-900/35 dark:text-pink-300 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition">
+                        <i class="fa-solid fa-road"></i> Self-Study Roadmap
+                    </a>
+                    <a href="#syllabary" class="nav-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-black text-slate-950 dark:text-slate-300 hover:bg-pink-50 dark:hover:bg-slate-800 hover:text-pink-600 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition">
+                        <i class="fa-solid fa-language"></i> Soundboard & Draw
+                    </a>
+                    <a href="#flashcards" class="nav-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-black text-slate-950 dark:text-slate-300 hover:bg-pink-50 dark:hover:bg-slate-800 hover:text-pink-600 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition">
+                        <i class="fa-solid fa-clone"></i> Zen Cards
+                    </a>
+                    <a href="#dojo" class="nav-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-black text-slate-950 dark:text-slate-300 hover:bg-pink-50 dark:hover:bg-slate-800 hover:text-pink-600 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition">
+                        <i class="fa-solid fa-user-ninja"></i> Quiz Dojo
+                    </a>
+                </nav>
+
+                <!-- Desktop Print Triggers -->
+                <button onclick="printWorkbook()" class="hidden md:flex bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl shadow-md items-center gap-2 transition transform active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-print"></i> Print Calligraphy Sheets
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN PLATFORM PAGES -->
+        <main class="max-w-6xl mx-auto px-4 mt-6 flex-1 flex flex-col justify-center w-full">
+
+            <!-- 1. GENUINE HOMEPAGE & ROADMAP VIEW -->
+            <section id="page-home" class="page-view space-y-12 pb-12">
+                
+                <!-- Hero Introduction -->
+                <div class="glass-panel rounded-3xl p-6 sm:p-10 shadow-xl border-t-8 border-pink-500 text-center max-w-4xl mx-auto relative overflow-hidden">
+                    <div class="absolute -right-16 -top-16 w-48 h-48 bg-pink-100 dark:bg-pink-900/10 rounded-full opacity-50 blur-3xl pointer-events-none"></div>
+                    <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-indigo-100 dark:bg-indigo-900/10 rounded-full opacity-50 blur-3xl pointer-events-none"></div>
+
+                    <span class="px-3 py-1.5 bg-gradient-to-r from-pink-500 to-indigo-600 text-white text-[10px] font-black rounded-full uppercase tracking-wider inline-flex items-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-sparkles"></i> Peer Study Space
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white mt-4 mb-4 tracking-tight leading-tight">
+                        Built by a Japan Aspirant <br class="hidden sm:inline"><span class="bg-gradient-to-r from-pink-600 to-indigo-600 bg-clip-text text-transparent">For Fellow Independent Learners</span>
+                    </h2>
+                    <p class="high-contrast-text font-semibold max-w-2xl mx-auto text-sm sm:text-base mb-6 leading-relaxed">
+                        Hey there! I am mapping my own journey to relocate to Japan. In my search for materials, I noticed how hard it is to study basic phonetics and proper mouth movements without pricey software or tutors. I built this completely free toolbox to help us align our mouth postures, master pitch rules, and practice together!
+                    </p>
+                    
+                    <!-- Quick Navigation Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                        <a href="#syllabary" class="bg-white/70 dark:bg-slate-800/50 p-4 rounded-xl border border-pink-100 dark:border-slate-750 hover:border-pink-300 shadow-sm transition flex flex-col items-center">
+                            <span class="w-10 h-10 bg-pink-50 dark:bg-slate-700 text-pink-600 dark:text-pink-400 rounded-full flex items-center justify-center text-lg mb-2"><i class="fa-solid fa-volume-high"></i></span>
+                            <span class="font-black text-xs uppercase tracking-wider text-slate-950 dark:text-slate-200">1. Kana Sound & Sketch</span>
+                            <span class="text-[11px] text-slate-800 dark:text-slate-400 mt-1 font-bold">46 Syllables & Live Canvas Tracing</span>
+                        </a>
+                        <a href="#flashcards" class="bg-white/70 dark:bg-slate-800/50 p-4 rounded-xl border border-pink-100 dark:border-slate-750 hover:border-pink-300 shadow-sm transition flex flex-col items-center">
+                            <span class="w-10 h-10 bg-indigo-50 dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center text-lg mb-2"><i class="fa-solid fa-clone"></i></span>
+                            <span class="font-black text-xs uppercase tracking-wider text-slate-950 dark:text-slate-200">2. Zen Cards</span>
+                            <span class="text-[11px] text-slate-800 dark:text-slate-400 mt-1 font-bold">Vocabulary with Audio-Pitch Synthesis</span>
+                        </a>
+                        <a href="#dojo" class="bg-white/70 dark:bg-slate-800/50 p-4 rounded-xl border border-pink-100 dark:border-slate-750 hover:border-pink-300 shadow-sm transition flex flex-col items-center">
+                            <span class="w-10 h-10 bg-emerald-50 dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center text-lg mb-2"><i class="fa-solid fa-user-ninja"></i></span>
+                            <span class="font-black text-xs uppercase tracking-wider text-slate-950 dark:text-slate-200">3. Quiz Dojo</span>
+                            <span class="text-[11px] text-slate-800 dark:text-slate-400 mt-1 font-bold">Interactive Speed-Timer Recall Challenge</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- REAL STUDY ROADMAP -->
+                <div class="max-w-4xl mx-auto space-y-8">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-pink-100 dark:border-slate-800 relative shadow-sm">
+                        
+                        <div class="flex flex-col md:flex-row items-center justify-between border-b border-pink-100/70 dark:border-slate-800 pb-6 mb-6 gap-4">
+                            <div class="text-center md:text-left">
+                                <h3 id="roadmap-heading" class="text-2xl font-black text-slate-950 dark:text-white">The Ultimate Beginner's Roadmap to Japan</h3>
+                                <p class="high-contrast-subtext font-semibold text-xs sm:text-sm mt-1">Step-by-step milestones to direct your early learning. Tap the checkboxes below to track your study progress.</p>
+                            </div>
+                            <!-- Minimal Checklist Progress Bar -->
+                            <div class="flex flex-col items-center md:items-end gap-1.5 bg-slate-100/90 dark:bg-slate-800/80 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 min-w-[180px]">
+                                <span class="text-[10px] font-black text-slate-850 dark:text-slate-400 uppercase tracking-wider block">Roadmap Completed</span>
+                                <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden mt-1">
+                                    <div id="readiness-progress-bar" class="bg-pink-500 h-full w-0 transition-all duration-500"></div>
+                                </div>
+                                <span id="readiness-text" class="font-black text-xs text-slate-950 dark:text-slate-200">0% Done</span>
+                            </div>
+                        </div>
+
+                        <div class="relative border-l-2 border-indigo-200 dark:border-slate-750 ml-4 md:ml-28 space-y-10">
+                            
+                            <!-- Step 1 -->
+                            <div class="relative pl-8">
+                                <div class="absolute -left-[15px] top-0.5 bg-indigo-600 dark:bg-indigo-500 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+                                    01
+                                </div>
+                                <div class="bg-slate-50/95 dark:bg-slate-900/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+                                    <span class="text-[10px] font-black text-indigo-950 dark:text-indigo-400 tracking-wider uppercase">Milestone 1: Character Foundations</span>
+                                    <h4 class="text-base sm:text-lg font-black text-slate-950 dark:text-slate-100 mt-0.5">Master Basic Hiragana & Katakana</h4>
+                                    <p class="text-sm text-slate-900 dark:text-slate-300 mt-2 leading-relaxed font-semibold">
+                                        Avoid relying on romaji spelling early on. Learn the native characters (46 core Hiragana, then 46 Katakana) using visual memory cues and stroke guides.
+                                    </p>
+                                    
+                                    <!-- Interactive Checkbox Subtasks -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-3 border-t border-dashed border-slate-200 dark:border-slate-750">
+                                        <label class="flex items-center gap-2 cursor-pointer text-xs font-black text-slate-950 dark:text-slate-200">
+                                            <input type="checkbox" class="task-checkbox rounded border-slate-300 dark:border-slate-600 text-pink-500 focus:ring-pink-500 w-4 h-4" onchange="calculateReadiness()">
+                                            <span>Memorize 46 Hiragana symbols</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer text-xs font-black text-slate-950 dark:text-slate-200">
+                                            <input type="checkbox" class="task-checkbox rounded border-slate-300 dark:border-slate-600 text-pink-500 focus:ring-pink-500 w-4 h-4" onchange="calculateReadiness()">
+                                            <span>Practice flat 'U' lip shape</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer text-xs font-black text-slate-950 dark:text-slate-200">
+                                            <input type="checkbox" class="task-checkbox rounded border-slate-300 dark:border-slate-600 text-pink-500 focus:ring-pink-500 w-4 h-4" onchange="calculateReadiness()">
+                                            <span>Trace and sketch symbols to learn stroke direction</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="relative pl-8">
+                                <div class="absolute -left-[15px] top-0.5 bg-indigo-600 dark:bg-indigo-500 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+                                    02
+                                </div>
+                                <div class="bg-slate-50/95 dark:bg-slate-900/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+                                    <span class="text-[10px] font-black text-indigo-950 dark:text-indigo-400 tracking-wider uppercase">Milestone 2: Sentence Grammar Structure</span>
+                                    <h4 class="text-base sm:text-lg font-black text-slate-950 dark:text-slate-100 mt-0.5">Learn the SOV Structure & Simple Particles</h4>
+                                    <p class="text-sm text-slate-900 dark:text-slate-300 mt-2 leading-relaxed font-semibold">
+                                        Japanese uses Subject-Object-Verb (SOV) order. Focus on how particles like は (wa), が (ga), and を (o) function as grammatical glue.
+                                    </p>
+                                    
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-3 border-t border-dashed border-slate-200 dark:border-slate-750">
+                                        <label class="flex items-center gap-2 cursor-pointer text-xs font-black text-slate-950 dark:text-slate-200">
+                                            <input type="checkbox" class="task-checkbox rounded border-slate-300 dark:border-slate-600 text-pink-500 focus:ring-pink-500 w-4 h-4" onchange="calculateReadiness()">
+                                            <span>Understand SOV sentence sequence</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer text-xs font-black text-slate-950 dark:text-slate-200">
+                                            <input type="checkbox" class="task-checkbox rounded border-slate-300 dark:border-slate-600 text-pink-500 focus:ring-pink-500 w-4 h-4" onchange="calculateReadiness()">
+                                            <span>Understand Topic (は) vs Subject (が) differences</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="relative pl-8">
+                                <div class="absolute -left-[15px] top-0.5 bg-indigo-600 dark:bg-indigo-500 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+                                    03
+                                </div>
+                                <div class="bg-slate-50/95 dark:bg-slate-900/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+                                    <span class="text-[10px] font-black text-indigo-950 dark:text-indigo-400 tracking-wider uppercase">Milestone 3: Pronunciation & Flow</span>
+                                    <h4 class="text-base sm:text-lg font-black text-slate-950 dark:text-slate-100 mt-0.5">Listen to High vs Low Pitch-Accents</h4>
+                                    <p class="text-sm text-slate-900 dark:text-slate-300 mt-2 leading-relaxed font-semibold">
+                                        Japanese words rise and fall in pitch. Focus on learning words with their correct pitch accent early on to develop natural, clean speech patterns.
+                                    </p>
+                                    
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-3 border-t border-dashed border-slate-200 dark:border-slate-750">
+                                        <label class="flex items-center gap-2 cursor-pointer text-xs font-black text-slate-950 dark:text-slate-200">
+                                            <input type="checkbox" class="task-checkbox rounded border-slate-300 dark:border-slate-600 text-pink-500 focus:ring-pink-500 w-4 h-4" onchange="calculateReadiness()">
+                                            <span>Recognize High vs Low tone trends</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer text-xs font-black text-slate-950 dark:text-slate-200">
+                                            <input type="checkbox" class="task-checkbox rounded border-slate-300 dark:border-slate-600 text-pink-500 focus:ring-pink-500 w-4 h-4" onchange="calculateReadiness()">
+                                            <span>Practice short, punchy vowel lengths</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USEFUL STUDENT RESOURCES & EXTERNAL SITES -->
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <h3 class="text-xl font-black text-center text-slate-950 dark:text-white">Highly Recommended Free Guides</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <a href="https://guidetojapanese.org/learn/" target="_blank" rel="noopener noreferrer" class="bg-white/80 dark:bg-slate-800/45 p-5 rounded-2xl border border-pink-100 dark:border-slate-700 hover:border-pink-300 hover:bg-white dark:hover:bg-slate-800 transition duration-300 shadow-sm flex gap-4 text-left group">
+                            <div class="text-indigo-600 dark:text-indigo-400 text-xl mt-1 group-hover:scale-110 transition-transform"><i class="fa-solid fa-book-open"></i></div>
+                            <div>
+                                <h4 class="font-black text-sm text-slate-950 dark:text-slate-100 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">Tae Kim's Guide to Japanese <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-70 ml-0.5"></i></h4>
+                                <p class="text-xs text-slate-900 dark:text-slate-300 mt-1 leading-relaxed font-semibold">The legendary guide explaining natural grammar intuitively without using textbook-style translations.</p>
+                            </div>
+                        </a>
+                        <a href="https://apps.ankiweb.net/" target="_blank" rel="noopener noreferrer" class="bg-white/80 dark:bg-slate-800/45 p-5 rounded-2xl border border-pink-100 dark:border-slate-700 hover:border-pink-300 hover:bg-white dark:hover:bg-slate-800 transition duration-300 shadow-sm flex gap-4 text-left group">
+                            <div class="text-pink-600 dark:text-pink-400 text-xl mt-1 group-hover:scale-110 transition-transform"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                            <div>
+                                <h4 class="font-black text-sm text-slate-950 dark:text-slate-100 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">Anki Spaced Repetition <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-70 ml-0.5"></i></h4>
+                                <p class="text-xs text-slate-900 dark:text-slate-300 mt-1 leading-relaxed font-semibold">An open-source flashcard program that prompts character review at calculated intervals to lock them into long-term memory.</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. KANA SYLLABARY SOUNDBOARD VIEW -->
+            <section id="page-syllabary" class="page-view hide space-y-6">
+                
+                <!-- Soundboard Header & Settings -->
+                <div class="glass-panel rounded-2xl p-5 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="text-center md:text-left">
+                        <span class="px-2.5 py-1 bg-pink-100 dark:bg-pink-900/40 text-pink-950 dark:text-pink-300 text-[10px] font-black rounded-full uppercase tracking-wider mb-1.5 inline-block">Study Space Utility</span>
+                        <h3 class="text-2xl font-black text-slate-950 dark:text-white flex items-center justify-center md:justify-start gap-2">
+                            <i class="fa-solid fa-table-cells text-pink-500"></i> Interactive Kana Soundboard
+                        </h3>
+                        <p class="text-xs text-slate-950 dark:text-slate-300 max-w-sm mt-1 font-bold">Select a character to view memory triggers, stroke directions, and sketch right on the pad!</p>
+                    </div>
+
+                    <!-- Audio Controls -->
+                    <div class="flex flex-wrap items-center gap-4 bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <div class="flex flex-col items-start">
+                            <label class="text-[10px] font-black text-slate-950 dark:text-slate-400 tracking-wider uppercase mb-1">Spelling Speed</label>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs text-slate-950 dark:text-slate-300 font-black"><i class="fa-solid fa-gauge-low"></i> Very Slow</span>
+                                <input id="voice-speed" type="range" min="0.1" max="1.0" step="0.05" value="0.25" class="w-24 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-pink-500">
+                                <span class="text-xs text-slate-950 dark:text-slate-300 font-black">Slow</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <label class="text-[10px] font-black text-slate-950 dark:text-slate-400 tracking-wider uppercase mb-1">Speaker Pitch</label>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs text-slate-950 dark:text-slate-300 font-black">Deep</span>
+                                <input id="voice-pitch" type="range" min="0.7" max="1.5" step="0.05" value="1.0" class="w-24 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                                <span class="text-xs text-slate-950 dark:text-slate-300 font-black">High</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Swap Tabs -->
+                    <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl w-full md:w-auto">
+                        <button id="tab-hira" onclick="toggleKanaType('hira')" class="flex-1 md:flex-none px-4 py-2 bg-white dark:bg-slate-700 text-slate-950 dark:text-slate-100 rounded-lg text-xs font-black shadow-sm cursor-pointer transition">
+                            あ Hiragana
+                        </button>
+                        <button id="tab-kata" onclick="toggleKanaType('kata')" class="flex-1 md:flex-none px-4 py-2 text-xs font-black text-slate-950 dark:text-slate-300 hover:text-pink-600 cursor-pointer transition">
+                            ア Katakana
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    
+                    <!-- Alphabet Grid (Left) -->
+                    <div id="kana-grid-container" class="lg:col-span-7 glass-panel p-5 rounded-2xl shadow-sm">
+                        <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
+                            <span class="text-xs font-black text-slate-950 dark:text-slate-300 tracking-wider uppercase">Select character to vocalize</span>
+                            <span class="text-[11px] text-pink-950 dark:text-pink-400 font-bold bg-pink-50 dark:bg-pink-900/20 px-2 py-0.5 rounded-md"><i class="fa-solid fa-microphone"></i> Live TTS</span>
+                        </div>
+                        <div id="kana-grid" class="grid grid-cols-5 gap-2.5">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Articulation Guide & Drawing canvas (Right) -->
+                    <div id="pronunciation-helper" class="lg:col-span-5 glass-panel p-5 rounded-2xl border-l-4 border-indigo-500 shadow-sm space-y-4">
+                        <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex justify-between items-start">
+                            <div>
+                                <span class="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-950 dark:text-indigo-300 text-[10px] font-black rounded uppercase tracking-wider mb-1 inline-block font-black">Mnemonic & Sketch</span>
+                                <h4 class="text-md font-black text-slate-950 dark:text-white">Character Helper</h4>
+                            </div>
+                            <div class="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center border-2 border-indigo-200 dark:border-indigo-900 shadow-sm">
+                                <span id="coached-char" class="text-xl font-black text-slate-950 dark:text-white">あ</span>
+                            </div>
+                        </div>
+
+                        <!-- Mnemonic Association Container -->
+                        <div class="bg-gradient-to-r from-slate-50 to-pink-50 dark:from-slate-800/40 dark:to-pink-950/20 p-3.5 rounded-xl border border-slate-150 dark:border-slate-800 flex flex-col gap-1 text-left">
+                            <span class="text-[9px] font-black text-slate-950 dark:text-slate-400 tracking-wider uppercase">Memory Association Mnemonic</span>
+                            <h5 id="coached-mnemonic" class="text-xs font-black text-slate-950 dark:text-slate-200 leading-relaxed italic">
+                                "Looks like an Apple with a leaf on top."
+                            </h5>
+                        </div>
+
+                        <!-- Tracing Sketchpad with Stroke Directions guide -->
+                        <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-black text-slate-950 dark:text-slate-300 uppercase tracking-wider"><i class="fa-solid fa-pen-nib"></i> Sketch Canvas</span>
+                                <button onclick="clearCanvas()" class="text-[10px] bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-950 dark:text-slate-300 font-bold py-1 px-2.5 rounded-lg transition">
+                                    <i class="fa-solid fa-trash-can"></i> Clear
+                                </button>
+                            </div>
+                            <div class="relative w-full h-36 border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center">
+                                <!-- Ghost Character to Trace -->
+                                <div id="canvas-ghost" class="absolute pointer-events-none select-none text-slate-200 dark:text-slate-800/50 text-7xl font-bold font-japanese opacity-60">あ</div>
+                                <canvas id="drawing-canvas" class="absolute top-0 left-0 w-full h-full cursor-crosshair"></canvas>
+                            </div>
+                            <!-- Live Stroke Sequence Directions -->
+                            <div class="mt-2 bg-indigo-50/50 dark:bg-indigo-950/20 p-2 rounded-lg border border-indigo-100/50 dark:border-indigo-950 text-[11px] text-left">
+                                <span class="text-[9px] font-black text-indigo-950 dark:text-indigo-400 block uppercase mb-0.5">Calligraphy Stroke Guide</span>
+                                <span id="coached-stroke-steps" class="text-slate-950 dark:text-slate-300 font-bold">3 Strokes: ① Left-to-right bar, ② Curved drop line down, ③ Large brush loop from center.</span>
+                            </div>
+                        </div>
+
+                        <!-- Lip & Pitch Blueprints -->
+                        <div class="space-y-3 text-xs">
+                            <div>
+                                <span class="text-[10px] font-black text-indigo-950 dark:text-indigo-400 tracking-wide block uppercase mb-0.5"><i class="fa-solid fa-face-smile"></i> Lip/Mouth Shape</span>
+                                <p id="mouth-shape-desc" class="text-slate-950 dark:text-slate-300 leading-relaxed bg-slate-50/50 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-150 dark:border-slate-800 font-bold">
+                                    Lips should be slightly relaxed, flat and unrounded. Keep throat muscles relaxed.
+                                </p>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-black text-indigo-950 dark:text-indigo-400 tracking-wide block uppercase mb-0.5"><i class="fa-solid fa-circle-exclamation"></i> Accent Pitfall</span>
+                                <p id="accent-trap-desc" class="text-slate-950 dark:text-slate-300 leading-relaxed bg-slate-50/50 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-150 dark:border-slate-800 font-bold">
+                                    Ensure sound remains short, explosive, and crisp. Avoid stretching vowels.
+                                </p>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-black text-indigo-950 dark:text-indigo-400 tracking-wide block uppercase mb-0.5"><i class="fa-solid fa-circle-nodes"></i> Pitch Flow (Tap Node to Play Tone)</span>
+                                <div class="bg-slate-950 text-emerald-400 p-2 rounded-lg font-mono text-[10px] leading-relaxed relative overflow-hidden">
+                                    <span class="absolute right-2 top-2 text-[9px] uppercase font-bold text-slate-600 select-none">Accent Trend</span>
+                                    <span id="accent-pattern-desc" class="font-black">Pitch Acc: Flat [L -> H]</span>
+                                    <div class="mt-2 flex items-center gap-1">
+                                        <button onclick="playPitchNode(260)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-emerald-300 rounded text-[9px] font-bold uppercase">Low Node (260Hz)</button>
+                                        <button onclick="playPitchNode(390)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-indigo-300 rounded text-[9px] font-bold uppercase">High Node (390Hz)</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. ZEN VOCABULARY FLASHCARDS VIEW -->
+            <section id="page-flashcards" class="page-view hide space-y-6">
+                <div class="glass-panel rounded-2xl p-6 shadow-md max-w-md mx-auto text-center relative overflow-hidden">
+                    <span class="px-2.5 py-1 bg-indigo-100 dark:bg-indigo-950/50 text-indigo-950 dark:text-indigo-300 text-[10px] font-black rounded-full uppercase tracking-wider mb-2 inline-block">Active Memory Recall</span>
+                    <h3 class="text-xl font-black text-slate-950 mb-1 dark:text-white">🎴 Zen Pitch Cards</h3>
+                    <p class="text-xs text-slate-950 dark:text-slate-200 mb-4 font-black">Master basic survival words. Tap the card below to rotate and view pitch guides, translation, and pitch beeps.</p>
+                    
+                    <!-- Flashcard Category selectors -->
+                    <div class="mb-4 flex gap-1 bg-slate-150 dark:bg-slate-850 p-1 rounded-lg">
+                        <button onclick="setCardCategory('all')" id="cat-all" class="flex-1 py-1 px-2 text-[10px] font-black rounded-md bg-white dark:bg-slate-700 text-slate-950 dark:text-slate-100 shadow-sm cursor-pointer transition">All Words</button>
+                        <button onclick="setCardCategory('travel')" id="cat-travel" class="flex-1 py-1 px-2 text-[10px] font-black rounded-md text-slate-950 dark:text-slate-300 hover:text-pink-600 cursor-pointer transition">Greetings/Food</button>
+                        <button onclick="setCardCategory('social')" id="cat-social" class="flex-1 py-1 px-2 text-[10px] font-black rounded-md text-slate-950 dark:text-slate-300 hover:text-pink-600 cursor-pointer transition">Survival</button>
+                    </div>
+
+                    <!-- Flip Card Assembly -->
+                    <div onclick="toggleCardFlip()" class="w-full h-72 bg-transparent perspective-1000 cursor-pointer group mx-auto mb-4">
+                        <div id="flip-card-inner" class="relative w-full h-full text-center transition-transform duration-500 preserve-3d shadow-xl rounded-2xl">
+                            
+                            <!-- Card Face (Front) -->
+                            <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 text-white rounded-2xl backface-hidden flex flex-col justify-between p-5">
+                                <div class="flex justify-between items-center w-full">
+                                    <span class="text-[10px] bg-white/25 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider" id="f-badge">Noun</span>
+                                    <span class="text-[10px] text-pink-200 font-bold"><i class="fa-solid fa-repeat"></i> Tap to flip</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <span class="text-5xl font-black tracking-wide mb-1 select-none font-japanese" id="f-kanji">猫</span>
+                                    <span class="text-md tracking-widest text-pink-100 font-medium" id="f-kana">ねこ</span>
+                                </div>
+                                <div class="w-full bg-white/10 backdrop-blur-md rounded-xl p-2 border border-white/10 flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-volume-high text-xs text-white"></i>
+                                    <span class="text-[9px] font-bold uppercase tracking-wider text-white">Tap audio controls below to hear readings</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Card Face (Back) -->
+                            <div class="absolute inset-0 w-full h-full bg-white dark:bg-slate-900 text-slate-950 dark:text-slate-100 rounded-2xl rotate-y-180 backface-hidden flex flex-col justify-between p-5 border-2 border-indigo-500">
+                                <div class="flex justify-between items-center w-full">
+                                    <span class="text-[10px] font-black text-indigo-950 dark:text-indigo-400 tracking-wider uppercase font-black" id="f-romaji">NEKO</span>
+                                    <span class="text-[10px] text-indigo-950 dark:text-indigo-400 font-black"><i class="fa-solid fa-circle-info"></i> Meaning</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <h4 class="text-2xl font-black text-slate-950 dark:text-white leading-none" id="f-english">Cat</h4>
+                                    
+                                    <!-- Interactive Pitch Beeper Indicator -->
+                                    <div class="mt-3 flex flex-col items-center w-full">
+                                        <span class="text-[9px] font-black text-slate-950 dark:text-slate-400 uppercase tracking-widest mb-1">Tone Pitch Wave (Click node to play tone)</span>
+                                        <div class="flex items-end justify-center gap-1 h-8 w-2/3 border-b border-indigo-100 dark:border-slate-800" id="f-pitch-wave">
+                                            <!-- Dynamically created indicators -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Example block with dynamic Japanese vocalization guide button -->
+                                <div class="text-[11px] text-slate-950 dark:text-slate-300 max-w-xs mt-2 bg-slate-50 dark:bg-slate-800 p-2.5 rounded-xl border border-slate-150 dark:border-slate-700 text-left flex flex-col gap-1">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[9px] text-slate-950 dark:text-slate-400 uppercase font-black tracking-widest">Example Phrase</span>
+                                        <button onclick="speakZenCardSentence(event)" class="text-indigo-950 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 text-[10px] font-black flex items-center gap-1 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700">
+                                            <i class="fa-solid fa-volume-high"></i> Speak Sentence
+                                        </button>
+                                    </div>
+                                    <span id="f-example" class="leading-relaxed font-black text-slate-950 dark:text-slate-200">ねこ が 好き です。 (I like cats.)</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center justify-between gap-3">
+                        <button onclick="speakCurrentCard()" class="flex-1 bg-pink-100 dark:bg-pink-900/30 text-pink-950 dark:text-pink-300 py-2.5 rounded-xl font-black text-xs flex items-center justify-center gap-2 cursor-pointer transition">
+                            <i class="fa-solid fa-volume-high"></i> Play Word
+                        </button>
+                        <button onclick="nextFlashcard()" class="flex-1 bg-slate-950 dark:bg-slate-800 hover:bg-slate-850 text-white py-2.5 rounded-xl font-black text-xs flex items-center justify-center gap-2 shadow cursor-pointer transition">
+                            Next Card <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. QUIZ DOJO VIEW -->
+            <section id="page-dojo" class="page-view hide space-y-6">
+                <div class="glass-panel rounded-2xl p-6 shadow-md max-w-md mx-auto relative overflow-hidden">
+                    
+                    <!-- Timer countdown bar -->
+                    <div class="absolute top-0 left-0 w-full h-1 bg-slate-100 dark:bg-slate-800">
+                        <div id="quiz-timer-bar" class="h-full bg-gradient-to-r from-pink-500 to-indigo-500 w-full transition-all duration-100"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center border-b border-slate-150 dark:border-slate-800 pb-4 mb-4">
+                        <div>
+                            <span class="px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/45 text-emerald-950 dark:text-emerald-300 text-[10px] font-black rounded-full uppercase tracking-wider inline-block mb-1">Interactive Speed Recall</span>
+                            <h3 class="font-black text-slate-950 dark:text-white"><i class="fa-solid fa-graduation-cap text-indigo-500"></i> Kana Speed Dojo</h3>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <span class="bg-indigo-100 dark:bg-indigo-900/40 text-indigo-950 dark:text-indigo-300 font-black px-3 py-1 rounded-full text-xs">Points: <span id="quiz-score">0</span></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Dojo Interface -->
+                    <div class="bg-gradient-to-br from-slate-900 to-indigo-950 p-6 rounded-2xl text-center mb-4 shadow-inner relative overflow-hidden">
+                        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/30 via-slate-900/0 to-slate-900/0 pointer-events-none"></div>
+                        
+                        <!-- Mini timer badge -->
+                        <div class="absolute top-2 right-2 bg-slate-950/40 text-rose-300 font-bold px-2 py-0.5 rounded text-[10px] tracking-wider border border-white/5 flex items-center gap-1">
+                            <i class="fa-solid fa-clock animate-pulse"></i> <span id="quiz-timer-label">15s</span>
+                        </div>
+
+                        <span class="text-[10px] text-indigo-300 uppercase font-bold tracking-widest relative z-10">Match Character Romaji</span>
+                        <h4 id="quiz-question-text" class="text-6xl font-black text-white mt-2 relative z-10 font-japanese select-none animate-pulse">あ</h4>
+                        
+                        <div class="flex justify-center gap-2 mt-4 relative z-10">
+                            <button onclick="speakText(document.getElementById('quiz-question-text').innerText)" class="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-xl font-bold inline-flex items-center gap-1.5 cursor-pointer transition">
+                                <i class="fa-solid fa-volume-high"></i> Hear Reading Guide
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Answers Grid -->
+                    <div id="quiz-options-container" class="grid grid-cols-2 gap-3">
+                        <!-- Options injected dynamically by JS -->
+                    </div>
+
+                    <!-- Session Streak tracking -->
+                    <div class="mt-4">
+                        <div class="flex justify-between text-[10px] font-black text-slate-950 dark:text-slate-400 uppercase tracking-wider mb-1">
+                            <span>Correct Answer Streak</span>
+                            <span id="streak-counter" class="font-black text-slate-950 dark:text-white">0 Hits</span>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div id="streak-bar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- 5. OFFLINE PRACTICE CALLIGRAPHY SHEET -->
+    <div class="print-only max-w-4xl mx-auto p-8 font-serif">
+        <div class="text-center border-b-4 border-black pb-6 mb-8">
+            <h1 class="text-4xl font-extrabold tracking-tight uppercase">KAIZEN JAPANESE KANA WORKSHEET</h1>
+            <h2 class="text-sm font-bold tracking-widest uppercase mt-1">改善日本語 — Tracing & Practice Grid</h2>
+            <p class="text-[11px] mt-2 italic">A student calligrapher utility to trace strokes and write correctly aligned characters.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-8 mb-12">
+            <div>
+                <h3 class="text-sm font-bold border-b border-black pb-1 mb-2">Practice Instructions</h3>
+                <ul class="text-[11px] space-y-1.5 list-decimal list-inside text-slate-800 font-semibold">
+                    <li>Always write stroke sequences slowly from top to bottom, left to right.</li>
+                    <li>Avoid rushing: keep each stroke aligned within the dotted grid indicators.</li>
+                    <li>Recite the sounds aloud as you physically trace the shapes.</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold border-b border-black pb-1 mb-2">Workbook Meta</h3>
+                <div class="space-y-1.5 text-[11px]">
+                    <p><strong>Student Name:</strong> ___________________________</p>
+                    <p><strong>Date:</strong> ________________________</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- HIRAGANA SECTION -->
+        <h3 class="text-md font-bold uppercase border-b-2 border-black pb-1.5 mb-4">Core Hiragana Tracing Blocks (あ, い, う, え, お)</h3>
+        
+        <div class="space-y-6 mb-10">
+            <!-- あ Row -->
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-slate-100 border-2 border-black flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold font-japanese">あ</span>
+                    <span class="text-[9px] font-sans font-bold">A</span>
+                </div>
+                <div class="flex-1 grid grid-cols-6 gap-3">
+                    <div class="workbook-square opacity-40"><span class="text-xl font-bold text-slate-400 font-japanese">あ</span></div>
+                    <div class="workbook-square opacity-20"><span class="text-xl font-bold text-slate-400 font-japanese">あ</span></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                </div>
+            </div>
+
+            <!-- い Row -->
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-slate-100 border-2 border-black flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold font-japanese">い</span>
+                    <span class="text-[9px] font-sans font-bold">I</span>
+                </div>
+                <div class="flex-1 grid grid-cols-6 gap-3">
+                    <div class="workbook-square opacity-40"><span class="text-xl font-bold text-slate-400 font-japanese">い</span></div>
+                    <div class="workbook-square opacity-20"><span class="text-xl font-bold text-slate-400 font-japanese">い</span></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                </div>
+            </div>
+
+            <!-- う Row -->
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-slate-100 border-2 border-black flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold font-japanese">う</span>
+                    <span class="text-[9px] font-sans font-bold">U</span>
+                </div>
+                <div class="flex-1 grid grid-cols-6 gap-3">
+                    <div class="workbook-square opacity-40"><span class="text-xl font-bold text-slate-400 font-japanese">う</span></div>
+                    <div class="workbook-square opacity-20"><span class="text-xl font-bold text-slate-400 font-japanese">う</span></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                </div>
+            </div>
+
+            <!-- え Row -->
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-slate-100 border-2 border-black flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold font-japanese">え</span>
+                    <span class="text-[9px] font-sans font-bold">E</span>
+                </div>
+                <div class="flex-1 grid grid-cols-6 gap-3">
+                    <div class="workbook-square opacity-40"><span class="text-xl font-bold text-slate-400 font-japanese">え</span></div>
+                    <div class="workbook-square opacity-20"><span class="text-xl font-bold text-slate-400 font-japanese">え</span></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                </div>
+            </div>
+
+            <!-- お Row -->
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-slate-100 border-2 border-black flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold font-japanese">お</span>
+                    <span class="text-[9px] font-sans font-bold">O</span>
+                </div>
+                <div class="flex-1 grid grid-cols-6 gap-3">
+                    <div class="workbook-square opacity-40"><span class="text-xl font-bold text-slate-400 font-japanese">お</span></div>
+                    <div class="workbook-square opacity-20"><span class="text-xl font-bold text-slate-400 font-japanese">お</span></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="print-break"></div>
+
+        <!-- NEW KATAKANA SECTION -->
+        <h3 class="text-md font-bold uppercase border-b-2 border-black pb-1.5 mb-4">Core Katakana Tracing Blocks (ア, イ, ウ, エ, オ)</h3>
+        
+        <div class="space-y-6 mb-10">
+            <!-- ア Row -->
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-slate-100 border-2 border-black flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold font-japanese">ア</span>
+                    <span class="text-[9px] font-sans font-bold">A</span>
+                </div>
+                <div class="flex-1 grid grid-cols-6 gap-3">
+                    <div class="workbook-square opacity-40"><span class="text-xl font-bold text-slate-400 font-japanese">ア</span></div>
+                    <div class="workbook-square opacity-20"><span class="text-xl font-bold text-slate-400 font-japanese">ア</span></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                </div>
+            </div>
+
+            <!-- イ Row -->
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-slate-100 border-2 border-black flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold font-japanese">イ</span>
+                    <span class="text-[9px] font-sans font-bold">I</span>
+                </div>
+                <div class="flex-1 grid grid-cols-6 gap-3">
+                    <div class="workbook-square opacity-40"><span class="text-xl font-bold text-slate-400 font-japanese">イ</span></div>
+                    <div class="workbook-square opacity-20"><span class="text-xl font-bold text-slate-400 font-japanese">イ</span></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                </div>
+            </div>
+
+            <!-- ウ Row -->
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-slate-100 border-2 border-black flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold font-japanese">ウ</span>
+                    <span class="text-[9px] font-sans font-bold">U</span>
+                </div>
+                <div class="flex-1 grid grid-cols-6 gap-3">
+                    <div class="workbook-square opacity-40"><span class="text-xl font-bold text-slate-400 font-japanese">ウ</span></div>
+                    <div class="workbook-square opacity-20"><span class="text-xl font-bold text-slate-400 font-japanese">ウ</span></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                </div>
+            </div>
+
+            <!-- エ Row -->
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-slate-100 border-2 border-black flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold font-japanese">エ</span>
+                    <span class="text-[9px] font-sans font-bold">E</span>
+                </div>
+                <div class="flex-1 grid grid-cols-6 gap-3">
+                    <div class="workbook-square opacity-40"><span class="text-xl font-bold text-slate-400 font-japanese">エ</span></div>
+                    <div class="workbook-square opacity-20"><span class="text-xl font-bold text-slate-400 font-japanese">エ</span></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                </div>
+            </div>
+
+            <!-- オ Row -->
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-slate-100 border-2 border-black flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold font-japanese">オ</span>
+                    <span class="text-[9px] font-sans font-bold">O</span>
+                </div>
+                <div class="flex-1 grid grid-cols-6 gap-3">
+                    <div class="workbook-square opacity-40"><span class="text-xl font-bold text-slate-400 font-japanese">オ</span></div>
+                    <div class="workbook-square opacity-20"><span class="text-xl font-bold text-slate-400 font-japanese">オ</span></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                    <div class="workbook-square"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="print-break"></div>
+
+        <!-- Tracing matching test -->
+        <h3 class="text-md font-bold uppercase border-b-2 border-black pb-1.5 mb-4 mt-8">Vocabulary Translation Matching Worksheets</h3>
+        <p class="text-[11px] mb-6 italic">Draw connection lines from terms on the left to translations on the right. Write missing Romaji answers in parentheses.</p>
+
+        <div class="grid grid-cols-2 gap-12 text-xs mt-8">
+            <div class="space-y-6">
+                <h4 class="font-bold border-b border-black pb-1">Word & Kana</h4>
+                <div class="flex items-center justify-between">
+                    <span>1. 猫 [ ねこ ] — Romaji: (____________)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>2. 犬 [ いぬ ] — Romaji: (____________)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>3. 桜 [ さくら ] — Romaji: (____________)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>4. 水 [ みず ] — Romaji: (____________)</span>
+                </div>
+            </div>
+            <div class="space-y-6">
+                <h4 class="font-bold border-b border-black pb-1">Meaning (Unscramble)</h4>
+                <div><span>A. Water (Fresh drinking water)</span></div>
+                <div><span>B. Cherry Blossom (Spring flower)</span></div>
+                <div><span>C. Cat (Feline)</span></div>
+                <div><span>D. Dog (Canine)</span></div>
+            </div>
+        </div>
+        
+        <footer class="mt-24 border-t border-slate-300 pt-4 text-center text-[9px] text-slate-500">
+            Kaizen Japanese Aspirant Study Pack. Built for open sharing. Self-study utility series.
+        </footer>
+    </div>
+
+    <!-- GLOBAL FOOTER -->
+    <footer class="no-print border-t border-pink-100 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md py-6 mt-12 text-center text-xs text-slate-950 dark:text-slate-400 relative z-10 font-bold">
+        <p class="mb-2"><strong>Kaizen Japanese</strong> - A peer-to-peer interactive study space for self-learning beginners.</p>
+        <p>Built by a Japan Aspirant with love. | <button onclick="printWorkbook()" class="text-indigo-900 dark:text-indigo-400 font-black hover:underline cursor-pointer">Launch Printable Sheets Window</button></p>
+    </footer>
+
+    <!-- CORE SYSTEM SCRIPTS -->
+    <script>
+        // Full basic Hiragana dataset (46 core characters with Mnemonics and Stroke sequences)
+        const hiraganaFull = [
+            {j: "あ", r: "a", lip: "Lips relaxed, flat and unrounded, slightly parted. Keep chin neutral.", trap: "Avoid stretching or elongation. Make it a clean, short pronunciation drop.", pitch: "Low to High (L-H)", mnemonic: "Looks like an Apple with a leaf on top.", strokes: "3 Strokes: ① Left-to-right bar, ② Curved drop line down, ③ Large brush loop from center."},
+            {j: "い", r: "i", lip: "Corners of the mouth pulled back sharply, like a wide grin.", trap: "Ensure vocal cord vibrates cleanly with no trailing breath.", pitch: "Low to High (L-H)", mnemonic: "Two parallel lines looking like two Eels swimming.", strokes: "2 Strokes: ① Long left vertical stroke with an upward hook, ② Shorter right vertical line."},
+            {j: "う", r: "u", lip: "Lips remain loose and unrounded. Mouth opening is quite flat.", trap: "Do NOT round lips like English 'oo'. Keep lip muscles flat.", pitch: "High to Low (H-L)", mnemonic: "Looks like an U-shaped ear listening to sounds.", strokes: "2 Strokes: ① Short top diagonal dash, ② Open curved C-shape line below."},
+            {j: "え", r: "e", lip: "Slightly more open than 'i', corners of lips relaxed.", trap: "Avoid raising your tongue too high or trailing into a 'y' sound.", pitch: "Low to High (L-H)", mnemonic: "Looks like an Exotic bird sitting on a tree branch.", strokes: "2 Strokes: ① Short top diagonal dash, ② Continuous zigzag line down-right-up-down."},
+            {j: "お", r: "o", lip: "Lips are slightly rounded but not projected forward.", trap: "Keep it short. Do not say 'oh' with a trailing sliding tone.", pitch: "High to Low (H-L)", mnemonic: "A flag marking an Obstacle in the middle of a trail.", strokes: "3 Strokes: ① Left-to-right bar, ② Vertically descending loop stroke, ③ Small tick at the upper-right side."},
+
+            {j: "か", r: "ka", lip: "Tongue base stamps briefly against palate. Quick explosive release.", trap: "Avoid too much heavy breathiness. Keep sound crisp.", pitch: "Flat (L-H)", mnemonic: "Looks like a person kicking up their leg in Karate.", strokes: "3 Strokes: ① Left horizontal hook, ② Crossing vertical down-left line, ③ Outer tick on the right."},
+            {j: "き", r: "ki", lip: "Mouth grin shape from 'i' with tongue tap start.", trap: "Keep it high pitched and short.", pitch: "Flat (L-H)", mnemonic: "Looks like a Key used to unlock doors.", strokes: "4 Strokes: ① Top horizontal line, ② Bottom horizontal line, ③ Diagonal slant down-right, ④ Curved bottom stroke."},
+            {j: "く", r: "ku", lip: "Flat mouth shape from 'u' with back throat snap.", trap: "Keep lip muscles relaxed; do not project lips outward.", pitch: "Flat (H-L)", mnemonic: "Looks like the open beak of a hungry Cuckoo bird.", strokes: "1 Stroke: ① Single continuous chevron pointing left (<)."},
+            {j: "け", r: "ke", lip: "Open mouth posture. Soft tap at tongue center.", trap: "Don't sound overly harsh or raspy.", pitch: "Flat (L-H)", mnemonic: "Looks like a sturdy Keg of delicious juice.", strokes: "3 Strokes: ① Left vertical swoop down with hook, ② Short top horizontal bar, ③ Crossing vertical line down-right."},
+            {j: "こ", r: "ko", lip: "Gentle throat snap with 'o' sound.", trap: "Stop immediately, don't drag into 'kou'.", pitch: "Flat (H-L)", mnemonic: "Two parallel planks forming a Corner floor structure.", strokes: "2 Strokes: ① Upper horizontal bar curving down, ② Bottom matching horizontal bar curving slightly up."},
+
+            {j: "さ", r: "sa", lip: "Hissing airflow through teeth, leading into open 'a'.", trap: "Keep teeth aligned; don't make the 's' too heavy.", pitch: "Flat (L-H)", mnemonic: "Looks like a signpost guiding you Safari-bound.", strokes: "3 Strokes: ① Left-to-right bar, ② Long crossing diagonal down-right, ③ Lower separate hook curve."},
+            {j: "し", r: "shi", lip: "Soft breathy 'sh' sound, lips pulled back.", trap: "Not too breathy. Do not shape into 'see'. It is 'shee'.", pitch: "Flat (H-L)", mnemonic: "Looks like a Shephard's crook or a long fish hook.", strokes: "1 Stroke: ① Downward vertical line curving sharply up-right at the bottom."},
+            {j: "す", r: "su", lip: "Teeth closed, quiet airflow escape with flat lips.", trap: "In conversation, the vowel 'u' is often completely silent.", pitch: "Flat (L-H)", mnemonic: "A heavy Swing looping around a metal bar.", strokes: "2 Strokes: ① Horizontal bar, ② Crossing vertical line loop-spinning in the center, swiping left."},
+            {j: "せ", r: "se", lip: "Sharp hiss leading to flat open 'e'.", trap: "Avoid English 'say'. Say 'seh' cleanly.", pitch: "Flat (H-L)", mnemonic: "A sunset over the mountains of Sendai.", strokes: "3 Strokes: ① Horizontal line, ② Right vertical drop hook, ③ Left crossing vertical line curving right."},
+            {j: "そ", r: "so", lip: "Hissing entry with 'o' exit.", trap: "Don't drag out. Keep sound short.", pitch: "Flat (L-H)", mnemonic: "A Sewing pattern zig-zagging back and forth.", strokes: "1 Stroke: ① Continuous horizontal zigzag ending in a wide C-like curve below."},
+
+            {j: "た", r: "ta", lip: "Tongue tip taps the back of upper teeth.", trap: "Avoid a heavy plosive breath escape.", pitch: "Flat (L-H)", mnemonic: "Clearly spells out the letters 'T' and 'A'.", strokes: "4 Strokes: ① Horizontal top bar, ② Slanted crossing line, ③ Inner short top stroke, ④ Inner short bottom stroke."},
+            {j: "ち", r: "chi", lip: "Tongue tip holds briefly against ridge, releasing into 'chee'.", trap: "Not 'tee'. The vowel is crisp and high.", pitch: "Flat (H-L)", mnemonic: "A Cheerleader with her arms open holding pom-poms.", strokes: "2 Strokes: ① Horizontal top line, ② Vertical slanting line ending in a wide clockwise loop."},
+            {j: "つ", r: "tsu", lip: "Tip of tongue stops behind teeth, releasing a narrow hiss.", trap: "Common trap. Practice like the end of the word 'cats'.", pitch: "Flat (L-H)", mnemonic: "Looks like a giant Tsunami wave curving forward.", strokes: "1 Stroke: ① Large open loop arching right and sweeping down."},
+            {j: "て", r: "te", lip: "Tongue tap releasing into relaxed open 'e'.", trap: "Ensure no heavy aspiration (breath puff).", pitch: "Flat (H-L)", mnemonic: "A telephone antenna or Tent pole bent by the wind.", strokes: "1 Stroke: ① Left-to-right bar looping back into a wide curve down-right."},
+            {j: "と", r: "to", lip: "Tongue tap releasing into soft rounded 'o'.", trap: "Do not let it drag into 'toe'.", pitch: "Flat (L-H)", mnemonic: "A small splinter stuck in a giant Toe.", strokes: "2 Strokes: ① Slanted short downward stroke, ② Large sweeping vertical curve below."},
+
+            {j: "な", r: "na", lip: "Soft nasal airflow through nose as tongue slides off palate.", trap: "Avoid pinching nostrils. Keep tone sweet and bright.", pitch: "Flat (L-H)", mnemonic: "A Nun praying in front of a giant cross.", strokes: "4 Strokes: ① Left-to-right bar, ② Crossing slanted drop line, ③ Slanted tick-dash on the right, ④ Lower loop line."},
+            {j: "に", r: "ni", lip: "Nasal sound leading into pressed-back 'i' shape.", trap: "Keep tongue pressed flatter against palate than English.", pitch: "Flat (H-L)", mnemonic: "A needle threading through a pair of knitting lines.", strokes: "3 Strokes: ① Left vertical line down with hook, ② Upper horizontal bar, ③ Matching lower horizontal bar."},
+            {j: "ぬ", r: "nu", lip: "Nasal release with unrounded mouth posture.", trap: "Avoid rounding mouth lips. Keep shape flat.", pitch: "Flat (L-H)", mnemonic: "Noodles tangled up on a plate with a loop loop.", strokes: "2 Strokes: ① Diagonal slide line down-right, ② Sinuous crossing loop drawing a knot at the end."},
+            {j: "ね", r: "ne", lip: "Nasal sound sliding into open 'e'.", trap: "Keep sound short and energetic.", pitch: "Flat (H-L)", mnemonic: "A fisherman casting a Net with a twisted loop at the bottom.", strokes: "2 Strokes: ① Vertical bar, ② Zigzag crossing line looping back into a knot at the bottom right."},
+            {j: "の", r: "no", lip: "Nasal release exiting into 'o'.", trap: "Do not say 'noh'. It is a crisp 'no'.", pitch: "Flat (L-H)", mnemonic: "A universal 'No entry' crossing sign.", strokes: "1 Stroke: ① Swirling loop starting from the center and curving up-right-down-left in a circle."},
+
+            {j: "は", r: "ha", lip: "Breath escape directly from throat, open lips.", trap: "In conversational Japanese, as a particle, this is pronounced 'wa'.", pitch: "Flat (H-L)", mnemonic: "Looks like a house chimney releasing smoke.", strokes: "3 Strokes: ① Left vertical drop, ② Horizontal cross bar, ③ Crossing vertical line looping at the bottom."},
+            {j: "ひ", r: "hi", lip: "Narrow throat hiss, lips pulled wide.", trap: "Slightly breathier than English. Tongue close to palate.", pitch: "Flat (L-H)", mnemonic: "A big laughing smile: 'He He He!'.", strokes: "1 Stroke: ① Multi-curve starting with left bar, dipping down-center-up and swerving right."},
+            {j: "ふ", r: "fu", lip: "Air blows gently between closely held lips.", trap: "Do NOT touch teeth with lip. Blow like blowing out a candle.", pitch: "Flat (H-L)", mnemonic: "Looks like Mount Fuji surrounded by clouds.", strokes: "4 Strokes: ① Top drop tick, ② Center looping curve, ③ Left tick, ④ Right tick."},
+            {j: "へ", r: "he", lip: "Soft throat puff with open 'e' shape.", trap: "Pronounced 'e' when serving as direction particle.", pitch: "Flat (L-H)", mnemonic: "A high mountain peak that you must Hike up.", strokes: "1 Stroke: ① Upward slant rising quickly, then dropping gently down-right."},
+            {j: "ほ", r: "ho", lip: "Throat breath escape exiting with 'o'.", trap: "Ensure lip rounding is minimal.", pitch: "Flat (H-L)", mnemonic: "A hot stove with a protective safety lid on top.", strokes: "4 Strokes: ① Left vertical line down, ② Upper horizontal bar, ③ Lower horizontal bar, ④ Crossing loop line down-right."},
+
+            {j: "ま", r: "ma", lip: "Lips close completely, sound escapes nose.", trap: "Keep lip seal light. Release smoothly.", pitch: "Flat (L-H)", mnemonic: "Looks like a Mast on an old pirate sailboat.", strokes: "3 Strokes: ① Top horizontal line, ② Middle horizontal line, ③ Crossing vertical line looping at the bottom."},
+            {j: "み", r: "mi", lip: "Mouth closed, vocalizing, release to grin.", trap: "Do not stress tongue tip. Keep it low.", pitch: "Flat (H-L)", mnemonic: "A music notation or a path winding around a hill.", strokes: "2 Strokes: ① Horizontal zigzag curving left and looping down-right, ② Independent slanted stroke crossing it."},
+            {j: "む", r: "mu", lip: "Mouth closed, nasal drone, release to flat 'u'.", trap: "Avoid vowel elongation.", pitch: "Flat (L-H)", mnemonic: "Looks like the face of a Cow making a 'Moo' sound.", strokes: "3 Strokes: ① Left-to-right bar, ② Long vertical line looping, jumping right, ③ Small dot on top-right."},
+            {j: "め", r: "me", lip: "Mouth closed, nasal release to open 'e'.", trap: "Keep cadence punchy.", pitch: "Flat (H-L)", mnemonic: "A messy plate of noodles with no loop at the tail.", strokes: "2 Strokes: ① Slanted slide line down-right, ② Curving sweeping circle crossing it."},
+            {j: "も", r: "mo", lip: "Mouth closed, nasal release to rounded 'o'.", trap: "Avoid dragging 'mo' into 'mou'.", pitch: "Flat (L-H)", mnemonic: "A fishhook to catch More and more fish.", strokes: "3 Strokes: ① Curved vertical hook, ② Top horizontal line, ③ Bottom horizontal line."},
+
+            {j: "や", r: "ya", lip: "Glide tongue forward from palate to open front.", trap: "Keep transition smooth, not too aggressive.", pitch: "Flat (L-H)", mnemonic: "A Yak with large curved horns on its head.", strokes: "3 Strokes: ① Horizontal-curve line hooking down, ② Slanting short tick line, ③ Long crossing diagonal down-left line."},
+            {j: "ゆ", r: "yu", lip: "Glide entry transitioning into unrounded 'u'.", trap: "Keep mouth lips flat and loose.", pitch: "Flat (H-L)", mnemonic: "Looks like a unique fish swimming in a pond.", strokes: "2 Strokes: ① Horizontal loop-swerve curving down-left, ② Long vertical crossing line on the right."},
+            {j: "よ", r: "yo", lip: "Glide entry transitioning into short 'o'.", trap: "Stop cleanly to avoid trailing pitch.", pitch: "Flat (L-H)", mnemonic: "A Yo-yo toy dangling on a finger hook.", strokes: "2 Strokes: ① Left-to-right short bar, ② Vertical line curving down into a closed loop on the right."},
+
+            {j: "ら", r: "ra", lip: "Tongue tip taps behind front teeth like a soft d/t sound.", trap: "Idiosyncratic sound! It is a flap, NOT an English sliding R.", pitch: "Flat (L-H)", mnemonic: "A rabbit sitting on a rock.", strokes: "2 Strokes: ① Slanted top tick stroke, ② Large curved C-like sweep below."},
+            {j: "り", r: "ri", lip: "Tongue tip tap sliding into grinned 'i'.", trap: "Make sure sound is crisp, resembling a short 'd'.", pitch: "Flat (H-L)", mnemonic: "Ribbons blowing wildly in the breeze.", strokes: "2 Strokes: ① Short left vertical line, ② Long sweeping right vertical curve."},
+            {j: "る", r: "ru", lip: "Tongue tip tap sliding into unrounded 'u'.", trap: "Highly common accent trap. Use soft palate tap.", pitch: "Flat (L-H)", mnemonic: "A wild route with a loop-de-loop loop at the end.", strokes: "1 Stroke: ① Zigzag line curving down-right and ending with a closed loop-knot."},
+            {j: "れ", r: "re", lip: "Tongue tip tap sliding into relaxed 'e'.", trap: "Do not curl tongue back like Western 'R'.", pitch: "Flat (H-L)", mnemonic: "A person Resting their back against a sturdy wall.", strokes: "2 Strokes: ① Vertical line, ② Crossing zigzag sweeping out to a sharp curve pointing right."},
+            {j: "ろ", r: "ro", lip: "Tongue tip tap sliding into relaxed 'o'.", trap: "Keep tap punchy and quick.", pitch: "Flat (L-H)", mnemonic: "A road identical to 'ru' but without the loop-knot.", strokes: "1 Stroke: ① Zigzag line curving down-right with no loop at the tail."},
+
+            {j: "わ", r: "wa", lip: "Slight rounded glide entry to open 'a'.", trap: "Keep start less dramatic than English 'wah'.", pitch: "Flat (L-H)", mnemonic: "A giant Wave washing over a flat coast.", strokes: "2 Strokes: ① Vertical line, ② Zigzag crossing line looping back into a wide curve swiping right."},
+            {j: "を", r: "wo", lip: "Pronounced identically to 'o' in modern Japanese.", trap: "Only used as grammar particle.", pitch: "Flat (H-L)", mnemonic: "A person walking into an Obstacle on the road.", strokes: "3 Strokes: ① Left-to-right bar, ② Slanted line shifting into a C-curve, ③ Separate lower horizontal curve."},
+            {j: "ん", r: "n", lip: "Mouth remains closed. Humming sound from nose.", trap: "Can modify neighboring sounds. Learn context shifts.", pitch: "Flat (L-H)", mnemonic: "Looks like the English letter 'n' stylized.", strokes: "1 Stroke: ① Continuous slanted line looping up and down to form an 'n' curve."}
+        ];
+
+        const katakanaFull = [
+            {j: "ア", r: "a", lip: "Lips relaxed, flat and unrounded, slightly parted. Neutral face.", trap: "Avoid stretching or elongation. Make it a clean, short pop.", pitch: "Low to High (L-H)", mnemonic: "An Ax head with a sharp edge.", strokes: "2 Strokes: ① Top horizontal line looping left, ② Sweeping diagonal line down-left."},
+            {j: "イ", r: "i", lip: "Corners of the mouth pulled back sharply, like a wide grin.", trap: "Ensure vocal cord is vibrating clean, no trailing breath.", pitch: "Low to High (L-H)", mnemonic: "Looks like a classic Easel support stand.", strokes: "2 Strokes: ① Slanted downward left stroke, ② Crossing vertical down stroke."},
+            {j: "ウ", r: "u", lip: "Lips remain loose and unrounded. Mouth opening is tiny.", trap: "Do NOT round lips like English 'oo'. Keep lips flat.", pitch: "High to Low (H-L)", mnemonic: "An umbrella top protection shield.", strokes: "3 Strokes: ① Short top vertical line, ② Left vertical tick, ③ Top-right box loop sweeping down-left."},
+            {j: "エ", r: "e", lip: "Slightly more open than 'i', corners of lips relaxed.", trap: "Avoid raising your tongue too high or trailing into a 'y' sound.", pitch: "Low to High (L-H)", mnemonic: "Looks like an Engineer's metal I-beam gird.", strokes: "3 Strokes: ① Top horizontal bar, ② Vertical support bar, ③ Bottom horizontal bar."},
+            {j: "オ", r: "o", lip: "Lips are slightly rounded but not projected forward.", trap: "Keep it short. Do not say 'oh' with a trailing sound.", pitch: "High to Low (H-L)", mnemonic: "An Opera singer with arms extended outwards.", strokes: "3 Strokes: ① Left-to-right bar, ② Slanted vertical drop with a left hook, ③ Leftward tick."},
+
+            {j: "カ", r: "ka", lip: "Tongue base stamps briefly against palate. Quick release.", trap: "Avoid too much heavy breathiness. Keep click sound clean.", pitch: "Flat (L-H)", mnemonic: "Looks like the Hiragana 'ka' but sharp and angular.", strokes: "2 Strokes: ① Angular horizontal hook, ② Slanting crossing stroke down-left."},
+            {j: "キ", r: "ki", lip: "Mouth grin shape from 'i' with tongue tap start.", trap: "Keep it high pitched and short.", pitch: "Flat (L-H)", mnemonic: "Looks like a Key but with straight, sharp geometric teeth.", strokes: "3 Strokes: ① Top horizontal line, ② Bottom horizontal line, ③ Diagonal slant down-right."},
+            {j: "ク", r: "ku", lip: "Flat mouth shape from 'u' with back throat snap.", trap: "Keep lip muscles relaxed; do not project lips outward.", pitch: "Flat (H-L)", mnemonic: "A cook's hat or a corner piece.", strokes: "2 Strokes: ① Short slanted left-down stroke, ② Angular top bar sweeping down-left."},
+            {j: "ケ", r: "ke", lip: "Open mouth posture. Soft tap at tongue center.", trap: "Don't sound overly harsh or raspy.", pitch: "Flat (L-H)", mnemonic: "Looks like a sharp, metallic hook.", strokes: "3 Strokes: ① Slanted downward stroke on left, ② Top-right horizontal bar, ③ Long crossing diagonal down-left."},
+            {j: "コ", r: "ko", lip: "Gentle throat snap with 'o' sound.", trap: "Stop immediately, don't drag into 'kou'.", pitch: "Flat (H-L)", mnemonic: "Two square building corners fitting together.", strokes: "2 Strokes: ① Upper right-angle bar, ② Bottom matching horizontal bar to close."},
+
+            {j: "サ", r: "sa", lip: "Hissing airflow through teeth, leading into open 'a'.", trap: "Keep teeth aligned; don't make the 's' too heavy.", pitch: "Flat (L-H)", mnemonic: "Two parallel pegs sticking out of a surfboard.", strokes: "3 Strokes: ① Long horizontal bar, ② Left slanted tick down, ③ Right crossing vertical drop."},
+            {j: "シ", r: "shi", lip: "Soft breathy 'sh' sound, lips pulled back.", trap: "Not too breathy. Do not shape into 'see'. It is 'shee'.", pitch: "Flat (H-L)", mnemonic: "Faces looking up at a ship mast.", strokes: "3 Strokes: ① Top short tick, ② Middle short tick, ③ Sweeping diagonal stroke from bottom-left to top-right."},
+            {j: "ス", r: "su", lip: "Teeth closed, quiet airflow escape with flat lips.", trap: "In conversation, the vowel 'u' is often completely silent.", pitch: "Flat (L-H)", mnemonic: "Looks like a hanger to dry suits.", strokes: "2 Strokes: ① Horizontal bar looping into a diagonal down-left, ② Slanted helper line on the right."},
+            {j: "セ", r: "se", lip: "Sharp hiss leading to flat open 'e'.", trap: "Avoid English 'say'. Say 'seh' cleanly.", pitch: "Flat (H-L)", mnemonic: "Looks like the Hiragana 'se' but boxy.", strokes: "2 Strokes: ① Horizontal bar turning down, ② Crossing upward hooked-L line."},
+            {j: "ソ", r: "so", lip: "Hissing entry with 'o' exit.", trap: "Don't drag out. Keep sound short.", pitch: "Flat (L-H)", mnemonic: "A needle sewing a stitch downwards.", strokes: "2 Strokes: ① Top-right short tick, ② Long sweeping diagonal from top-right to bottom-left."},
+
+            {j: "タ", r: "ta", lip: "Tongue tip taps the back of upper teeth.", trap: "Avoid a heavy plosive breath escape.", pitch: "Flat (L-H)", mnemonic: "Looks like 'ku' but with an extra stroke.", strokes: "3 Strokes: ① Short slanted left-down stroke, ② Angular top bar sweeping down-left, ③ Inner horizontal tick."},
+            {j: "チ", r: "chi", lip: "Tongue tip holds briefly against ridge, releasing into 'chee'.", trap: "Not 'tee'. The vowel is crisp and high.", pitch: "Flat (H-L)", mnemonic: "Looks like the number '千' (1000).", strokes: "3 Strokes: ① Top diagonal slanting tick, ② Horizontal bar below, ③ Long crossing vertical line curving left."},
+            {j: "ツ", r: "tsu", lip: "Tip of tongue stops behind teeth, releasing a narrow hiss.", trap: "Common trap. Practice like the end of the word 'cats'.", pitch: "Flat (L-H)", mnemonic: "Tsunami waves crashing down together.", strokes: "3 Strokes: ① Top-left vertical tick, ② Second vertical tick, ③ Long sweeping diagonal from top-right to bottom-left."},
+            {j: "テ", r: "te", lip: "Tongue tap releasing into relaxed open 'e'.", trap: "Ensure no heavy aspiration (breath puff).", pitch: "Flat (H-L)", mnemonic: "Looks like a radio antenna tower.", strokes: "3 Strokes: ① Top short horizontal line, ② Long middle horizontal line, ③ Sweeping diagonal down-left from center."},
+            {j: "ト", r: "to", lip: "Tongue tap releasing into soft rounded 'o'.", trap: "Do not let it drag into 'toe'.", pitch: "Flat (L-H)", mnemonic: "A totem pole showing direction.", strokes: "2 Strokes: ① Vertical center bar, ② Slanted side tick starting from center heading down-right."},
+
+            {j: "ナ", r: "na", lip: "Soft nasal airflow through nose as tongue slides off palate.", trap: "Avoid pinching nostrils. Keep tone sweet and bright.", pitch: "Flat (L-H)", mnemonic: "A simple cross resembling a knife or sword.", strokes: "2 Strokes: ① Horizontal crossbar, ② Long sweeping diagonal down-left from center."},
+            {j: "ニ", r: "ni", lip: "Nasal sound leading into pulled-back 'i' shape.", trap: "Keep tongue pressed flatter against palate than English.", pitch: "Flat (H-L)", mnemonic: "The kanji for the number two (二).", strokes: "2 Strokes: ① Top short horizontal bar, ② Bottom longer horizontal bar."},
+            {j: "ヌ", r: "nu", lip: "Nasal release with unrounded mouth posture.", trap: "Avoid rounding mouth lips. Keep shape flat.", pitch: "Flat (L-H)", mnemonic: "Looks like chopsticks grabbing a noodle.", strokes: "2 Strokes: ① Top angular horizontal loop down-left, ② Crossing diagonal down-right tick."},
+            {j: "ネ", r: "ne", lip: "Nasal sound sliding into open 'e'.", trap: "Keep sound short and energetic.", pitch: "Flat (H-L)", mnemonic: "Looks like a net stand on a pole.", strokes: "4 Strokes: ① Top short vertical tick, ② Horizontal loop down-left, ③ Vertical support drop, ④ Diagonal right tick."},
+            {j: "ノ", r: "no", lip: "Nasal release exiting into 'o'.", trap: "Do not say 'noh'. It is a crisp 'no'.", pitch: "Flat (L-H)", mnemonic: "A single long diagonal stroke.", strokes: "1 Stroke: ① Single sweep starting top-right heading down-left."},
+
+            {j: "ハ", r: "ha", lip: "Breath escape directly from throat, open lips.", trap: "Avoid chest tightening. Speak with light airflow.", pitch: "Flat (H-L)", mnemonic: "Two paths diverging like walls of a hut.", strokes: "2 Strokes: ① Short slanted down-left line, ② Slanted down-right line on the right."},
+            {j: "ヒ", r: "hi", lip: "Narrow throat hiss, lips pulled wide.", trap: "Slightly breathier than English. Tongue close to palate.", pitch: "Flat (L-H)", mnemonic: "Looks like a heel of a shoe.", strokes: "2 Strokes: ① Top horizontal tick, ② Curved L-shape line starting left curving up-right."},
+            {j: "フ", r: "fu", lip: "Air blows gently between closely held lips.", trap: "Do NOT touch teeth with lip. Blow like blowing out a candle.", pitch: "Flat (H-L)", mnemonic: "A flag flapping in the wind.", strokes: "1 Stroke: ① Slanting horizontal bar curving into a swift diagonal down-left."},
+            {j: "ヘ", r: "he", lip: "Soft throat puff with open 'e' shape.", trap: "Ensure no vocal straining during output.", pitch: "Flat (L-H)", mnemonic: "An exact match to Hiragana 'he'.", strokes: "1 Stroke: ① Upward slant rising quickly, then dropping gently down-right."},
+            {j: "ホ", r: "ho", lip: "Throat breath escape exiting with 'o'.", trap: "Ensure lip rounding is minimal.", pitch: "Flat (H-L)", mnemonic: "Looks like a holy cross over a house roof.", strokes: "4 Strokes: ① Top horizontal cross, ② Vertical center line with bottom hook, ③ Left slanted tick, ④ Right slanted tick."},
+
+            {j: "マ", r: "ma", lip: "Lips close completely, sound escapes nose.", trap: "Keep lip seal light. Release smoothly.", pitch: "Flat (L-H)", mnemonic: "A master angle block.", strokes: "2 Strokes: ① Upper triangular horizontal-hook, ② Slanted downward bottom stroke."},
+            {j: "ミ", r: "mi", lip: "Mouth closed, vocalizing, release to grin.", trap: "Do not stress tongue tip. Keep it low.", pitch: "Flat (H-L)", mnemonic: "Three parallel lines representing music strings.", strokes: "3 Strokes: ① Top slanted line, ② Middle slanted line, ③ Bottom slanted line."},
+            {j: "ム", r: "mu", lip: "Mouth closed, nasal drone, release to flat 'u'.", trap: "Avoid vowel elongation.", pitch: "Flat (L-H)", mnemonic: "A triangular wedge shape.", strokes: "2 Strokes: ① Angular horizontal-curve down-right, ② Left-slanting tick inside."},
+            {j: "メ", r: "me", lip: "Mouth closed, nasal release to open 'e'.", trap: "Keep cadence punchy.", pitch: "Flat (H-L)", mnemonic: "Two crossing metallic swords.", strokes: "2 Strokes: ① Slanted sweep down-right, ② Slanted crossing line down-left."},
+            {j: "モ", r: "mo", lip: "Mouth closed, nasal release to rounded 'o'.", trap: "Avoid dragging 'mo' into 'mou'.", pitch: "Flat (L-H)", mnemonic: "Identical to Hiragana 'mo' but with straight angles.", strokes: "3 Strokes: ① Top horizontal line, ② Bottom horizontal line, ③ Vertical L-shape hook."},
+
+            {j: "ヤ", r: "ya", lip: "Glide tongue forward from palate to open front.", trap: "Keep transition smooth, not too aggressive.", pitch: "Flat (L-H)", mnemonic: "Identical to Hiragana 'ya' but with sharp corners.", strokes: "2 Strokes: ① Horizontal bar curving down-left, ② Long diagonal crossing line down-left."},
+            {j: "ユ", r: "yu", lip: "Glide entry transitioning into unrounded 'u'.", trap: "Keep mouth lips flat and loose.", pitch: "Flat (H-L)", mnemonic: "An angular hook structure.", strokes: "2 Strokes: ① Left-to-right bar turning down and swerving left, ② Horizontal bottom closing bar."},
+            {j: "ヨ", r: "yo", lip: "Glide entry transitioning into short 'o'.", trap: "Stop cleanly to avoid trailing pitch.", pitch: "Flat (L-H)", mnemonic: "A toy block or the letter E facing backwards.", strokes: "3 Strokes: ① Top horizontal-down bracket, ② Middle horizontal tick, ③ Bottom closing horizontal bar."},
+
+            {j: "ラ", r: "ra", lip: "Tongue tip taps behind front teeth like a soft d/t sound.", trap: "Critically important sound! It is a flap, NOT an English sliding R.", pitch: "Flat (L-H)", mnemonic: "Looks like a radio satellite dish.", strokes: "2 Strokes: ① Top horizontal line, ② Crossing hook line below turning left."},
+            {j: "リ", r: "ri", lip: "Tongue tip tap sliding into grinned 'i'.", trap: "Make sure sound is crisp, resembling a short 'd'.", pitch: "Flat (H-L)", mnemonic: "Sharp parallel ribbon lines.", strokes: "2 Strokes: ① Left vertical drop, ② Longer right vertical drop curving slightly left."},
+            {j: "ル", r: "ru", lip: "Tongue tip tap sliding into unrounded 'u'.", trap: "Highly common accent trap. Use soft palate tap.", pitch: "Flat (L-H)", mnemonic: "Two legs stepping outwards.", strokes: "2 Strokes: ① Slanted left vertical line, ② Curved right vertical line turning up-right."},
+            {j: "レ", r: "re", lip: "Tongue tip tap sliding into relaxed 'e'.", trap: "Do not curl tongue back like Western 'R'.", pitch: "Flat (H-L)", mnemonic: "A checkmark or single hooked curve.", strokes: "1 Stroke: ① Continuous down-slanted line curving sharply up-right at the bottom."},
+            {j: "ロ", r: "ro", lip: "Tongue tip tap sliding into relaxed 'o'.", trap: "Keep tap punchy and quick.", pitch: "Flat (L-H)", mnemonic: "A solid, closed box or window.", strokes: "3 Strokes: ① Left vertical line, ② Top horizontal bar turning down-right, ③ Bottom horizontal line to close."},
+
+            {j: "ワ", r: "wa", lip: "Slight rounded glide entry to open 'a'.", trap: "Keep start less dramatic than English 'wah'.", pitch: "Flat (L-H)", mnemonic: "An angular hook similar to 'u' but with no head tick.", strokes: "2 Strokes: ① Left short vertical bar, ② Top horizontal bar turning down-left."},
+            {j: "ヲ", r: "wo", lip: "Pronounced identically to 'o' in modern Katakana.", trap: "Mainly used for particles or stylized loans.", pitch: "Flat (H-L)", mnemonic: "Looks like a person running with a flag.", strokes: "3 Strokes: ① Top horizontal line, ② Middle horizontal line, ③ Diagonal slant down-left starting from center."},
+            {j: "ン", r: "n", lip: "Mouth remains closed. Humming sound from nose.", trap: "Vocalizes smoothly to seal foreign syllable constructs.", pitch: "Flat (L-H)", mnemonic: "A face with a single winking eye looking up.", strokes: "2 Strokes: ① Top-left slanted tick, ② Sweeping diagonal stroke from bottom-left to top-right."}
+        ];
+
+        // Authentic simple student vocabulary list
+        const vocabularyCards = [
+            // Travel / Greetings / Essentials
+            {kanji: "水", kana: "みず", romaji: "mizu", eng: "Water", ex: "みず を 飲みます。 (I drink water.)", badge: "Noun", cat: "travel", pitch: [1, 2]},
+            {kanji: "切符", kana: "きっぷ", romaji: "kippu", eng: "Ticket", ex: "きっぷ を 買います。 (I buy a ticket.)", badge: "Noun", cat: "travel", pitch: [1, 2, 1]},
+            {kanji: "駅", kana: "えき", romaji: "eki", eng: "Station", ex: "新宿えき は どこですか？ (Where is Shinjuku station?)", badge: "Noun", cat: "travel", pitch: [2, 1]},
+            {kanji: "寿司", kana: "すし", romaji: "sushi", eng: "Sushi", ex: "すし が 好きです。 (I love sushi.)", badge: "Noun", cat: "travel", pitch: [2, 1]},
+            {kanji: "桜", kana: "さくら", romaji: "sakura", eng: "Cherry Blossom", ex: "さくら が きれい です。 (The cherry blossoms are beautiful.)", badge: "Noun", cat: "travel", pitch: [1, 2, 2]},
+            
+            // Social / Survival
+            {kanji: "猫", kana: "ねこ", romaji: "neko", eng: "Cat", ex: "ねこ が 好き です。 (I like cats.)", badge: "Noun", cat: "social", pitch: [2, 1]},
+            {kanji: "犬", kana: "いぬ", romaji: "inu", eng: "Dog", ex: "白い いぬ が います。 (There is a white dog.)", badge: "Noun", cat: "social", pitch: [1, 2]},
+            {kanji: "友達", kana: "ともだち", romaji: "tomodachi", eng: "Friend", ex: "ともだち と 遊びます。 (I hang out with my friend.)", badge: "Noun", cat: "social", pitch: [1, 2, 2, 2]},
+            {kanji: "先生", kana: "せんせい", romaji: "sensei", eng: "Teacher", ex: "せんせい、おはようございます。 (Good morning, teacher!)", badge: "Noun", cat: "social", pitch: [1, 2, 2, 1]}
+        ];
+
+        let activeCardsList = [...vocabularyCards];
+        let currentCardIndex = 0;
+        let score = 0;
+        let currentStreak = 0;
+        let currentQuizItem = null;
+        let currentKanaType = 'hira';
+        let audioCtx = null;
+        
+        // Timer elements
+        let quizTimerInterval = null;
+        let quizTimeLeft = 15;
+
+        // Initialize web sound contexts
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Web Audio Synthesizer chimes
+        function playChimeEffect(isCorrect) {
+            try {
+                initAudioContext();
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (isCorrect) {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.35);
+                } else {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.25);
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                }
+            } catch (e) {
+                console.warn("Speech synthesis blocked.", e);
+            }
+        }
+
+        // Plays customizable sine waves for pitch accent nodes
+        function playPitchNode(frequency) {
+            try {
+                initAudioContext();
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } catch(e) {
+                console.warn(e);
+            }
+        }
+
+        // Realistic Direct Speech Synthesizer (Pronounces syllables clearly and slowly)
+        function speakText(textStr) {
+            if (!textStr) return;
+            window.speechSynthesis.cancel(); 
+
+            let utterance = new SpeechSynthesisUtterance(textStr);
+            utterance.lang = 'ja-JP';
+            
+            const speedEl = document.getElementById('voice-speed');
+            const pitchEl = document.getElementById('voice-pitch');
+            
+            // Ultra slow default crawl pacing
+            let baseRate = speedEl ? parseFloat(speedEl.value) : 0.25;
+            
+            // If it is an isolated single syllable character, we slow it down additionally to prevent clipping
+            if (textStr.length === 1) {
+                baseRate = baseRate * 0.75;
+            }
+
+            utterance.rate = Math.max(0.1, Math.min(1.2, baseRate));
+            utterance.pitch = pitchEl ? parseFloat(pitchEl.value) : 1.0;
+
+            let voices = window.speechSynthesis.getVoices();
+            let femaleVoice = voices.find(v => v.lang.includes('ja') && v.name.toLowerCase().includes('female')) || 
+                              voices.find(v => v.lang.includes('ja') && (v.name.includes('Kyoko') || v.name.includes('Haruka'))) ||
+                              voices.find(v => v.lang.includes('ja'));
+            if(femaleVoice) {
+                utterance.voice = femaleVoice;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Speaks the Japanese sentence part of the Zen Card example phrase
+        function speakZenCardSentence(event) {
+            if(event) event.stopPropagation(); // Block card flip trigger when hitting audio play
+            const rawExampleText = document.getElementById('f-example').innerText;
+            if(!rawExampleText) return;
+            
+            // Clean out parentheses to speak only the Japanese part
+            const japanesePart = rawExampleText.split('(')[0].trim();
+            speakText(japanesePart);
+        }
+
+        // Bypasses browser user activation restrictions
+        function unlockSpeechSystem() {
+            initAudioContext();
+            
+            let u = new SpeechSynthesisUtterance(' ');
+            u.lang = 'ja-JP';
+            window.speechSynthesis.speak(u);
+            
+            sessionStorage.setItem('audio_unlocked', 'true');
+            
+            const unlocker = document.getElementById('audio-unlocker');
+            if (unlocker) {
+                unlocker.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => {
+                    unlocker.classList.add('hide');
+                }, 500);
+            }
+        }
+
+        // Theme switching engine (Toggles documentElement dark class natively for Tailwind dark: variants)
+        function toggleTheme() {
+            const body = document.body;
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            if(body.classList.contains('theme-light')) {
+                body.classList.remove('theme-light');
+                body.classList.add('theme-dark');
+                html.classList.add('dark');
+                themeIcon.className = "fa-solid fa-sun";
+            } else {
+                body.classList.remove('theme-dark');
+                body.classList.add('theme-light');
+                html.classList.remove('dark');
+                themeIcon.className = "fa-solid fa-moon";
+            }
+        }
+
+        // Canvas tracing engine
+        let dCanvas, dCtx;
+        let isDrawing = false;
+        
+        function initDrawingCanvas() {
+            dCanvas = document.getElementById('drawing-canvas');
+            if(!dCanvas) return;
+            dCtx = dCanvas.getContext('2d');
+            
+            // Resize canvas to match its client bounding dimensions
+            const rect = dCanvas.parentNode.getBoundingClientRect();
+            dCanvas.width = rect.width;
+            dCanvas.height = rect.height;
+            
+            // Set pen styles
+            dCtx.strokeStyle = '#6366f1'; // Indigo pencil line
+            dCtx.lineWidth = 4;
+            dCtx.lineCap = 'round';
+            dCtx.lineJoin = 'round';
+
+            // Event Listeners for drawing
+            dCanvas.addEventListener('mousedown', startDrawing);
+            dCanvas.addEventListener('mousemove', draw);
+            dCanvas.addEventListener('mouseup', stopDrawing);
+            dCanvas.addEventListener('mouseleave', stopDrawing);
+
+            // Mobile/Tablet touch events support
+            dCanvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                dCanvas.dispatchEvent(mouseEvent);
+            }, {passive: false});
+
+            dCanvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                dCanvas.dispatchEvent(mouseEvent);
+            }, {passive: false});
+
+            dCanvas.addEventListener('touchend', (e) => {
+                const mouseEvent = new MouseEvent('mouseup', {});
+                dCanvas.dispatchEvent(mouseEvent);
+            });
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            dCtx.beginPath();
+            const rect = dCanvas.getBoundingClientRect();
+            dCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function draw(e) {
+            if(!isDrawing) return;
+            const rect = dCanvas.getBoundingClientRect();
+            dCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            dCtx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearCanvas() {
+            if(!dCtx) return;
+            dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
+        }
+
+        // Calculate roadmap progress (Updates simplified percentage bar indicator)
+        function calculateReadiness() {
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+            const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const totalCount = checkboxes.length;
+            
+            const progressPct = Math.round((checkedCount / totalCount) * 100);
+            
+            // Update simple status progress bar
+            const bar = document.getElementById('readiness-progress-bar');
+            if (bar) {
+                bar.style.width = `${progressPct}%`;
+            }
+
+            const readinessText = document.getElementById('readiness-text');
+            if(readinessText) readinessText.innerText = `${progressPct}% Done`;
+        }
+
+        // Syllabary assembly
+        function renderSyllabaryGrid() {
+            const container = document.getElementById('kana-grid');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            const targetedList = currentKanaType === 'hira' ? hiraganaFull : katakanaFull;
+
+            targetedList.forEach(item => {
+                let cell = document.createElement('button');
+                cell.className = "bg-white/90 dark:bg-slate-800 p-3 rounded-xl shadow-sm border border-pink-100 dark:border-slate-700 hover:border-pink-400 flex flex-col items-center justify-center gap-0.5 group active:scale-95 transition cursor-pointer";
+                cell.onclick = () => selectCharacter(item);
+                cell.innerHTML = `
+                    <span class="text-2xl font-black text-slate-950 dark:text-slate-200 group-hover:text-pink-600 transition font-japanese">${item.j}</span>
+                    <span class="text-[10px] font-black text-slate-950 tracking-wider uppercase dark:text-slate-400">${item.r}</span>
+                `;
+                container.appendChild(cell);
+            });
+
+            if(targetedList.length > 0) {
+                selectCharacter(targetedList[0]);
+            }
+        }
+
+        // Selects character card to refresh guides & stroke explanations
+        function selectCharacter(charObj) {
+            speakText(charObj.j);
+            
+            document.getElementById('coached-char').innerText = charObj.j;
+            document.getElementById('coached-mnemonic').innerText = charObj.mnemonic || "Visual memory memorization helper placeholder.";
+            document.getElementById('coached-stroke-steps').innerText = charObj.strokes || "Handwriting stroke instructions.";
+            document.getElementById('mouth-shape-desc').innerText = charObj.lip;
+            document.getElementById('accent-trap-desc').innerText = charObj.trap;
+            document.getElementById('accent-pattern-desc').innerText = `Pitch Acc: ${charObj.pitch}`;
+            
+            const ghost = document.getElementById('canvas-ghost');
+            if (ghost) ghost.innerText = charObj.j;
+            clearCanvas();
+        }
+
+        function toggleKanaType(type) {
+            currentKanaType = type;
+            document.getElementById('tab-hira').className = type === 'hira' ? "flex-1 md:flex-none px-4 py-2 bg-white dark:bg-slate-700 text-slate-950 dark:text-slate-100 rounded-lg text-xs font-black shadow-sm cursor-pointer" : "flex-1 md:flex-none px-4 py-2 text-xs font-black text-slate-950 dark:text-slate-300 hover:text-pink-600 cursor-pointer transition";
+            document.getElementById('tab-kata').className = type === 'kata' ? "flex-1 md:flex-none px-4 py-2 bg-white dark:bg-slate-700 text-slate-950 dark:text-slate-100 rounded-lg text-xs font-black shadow-sm cursor-pointer" : "flex-1 md:flex-none px-4 py-2 text-xs font-black text-slate-950 dark:text-slate-300 hover:text-pink-600 cursor-pointer transition";
+            renderSyllabaryGrid();
+        }
+
+        // Cards layout
+        function loadFlashcard() {
+            if (activeCardsList.length === 0) return;
+            let data = activeCardsList[currentCardIndex];
+            
+            const cardInner = document.getElementById('flip-card-inner');
+            if(cardInner) {
+                cardInner.classList.remove('rotate-y-180');
+            }
+
+            document.getElementById('f-kanji').innerText = data.kanji;
+            document.getElementById('f-kana').innerText = data.kana;
+            document.getElementById('f-romaji').innerText = data.romaji.toUpperCase();
+            document.getElementById('f-english').innerText = data.eng;
+            document.getElementById('f-example').innerText = data.ex;
+            document.getElementById('f-badge').innerText = data.badge;
+
+            const waveContainer = document.getElementById('f-pitch-wave');
+            if (waveContainer) {
+                waveContainer.innerHTML = '';
+                data.pitch.forEach((level, idx) => {
+                    const block = document.createElement('button');
+                    const heightClass = level === 2 ? 'h-6 bg-indigo-500 hover:bg-indigo-400' : 'h-3 bg-pink-400 hover:bg-pink-300';
+                    block.className = `w-5 rounded-t-md transition-all duration-300 ${heightClass} cursor-pointer focus:outline-none`;
+                    block.title = level === 2 ? "High pitch note" : "Low pitch note";
+                    
+                    // Synthesize actual tone on clicking the pitch node block
+                    block.onclick = (e) => {
+                        e.stopPropagation(); // Stop flipping trigger
+                        playPitchNode(level === 2 ? 390 : 260);
+                    };
+
+                    waveContainer.appendChild(block);
+                });
+            }
+        }
+
+        function toggleCardFlip() {
+            const cardInner = document.getElementById('flip-card-inner');
+            if(cardInner) {
+                cardInner.classList.toggle('rotate-y-180');
+            }
+        }
+
+        function nextFlashcard() {
+            if (activeCardsList.length === 0) return;
+            currentCardIndex = (currentCardIndex + 1) % activeCardsList.length;
+            loadFlashcard();
+        }
+
+        function speakCurrentCard() {
+            if (activeCardsList.length === 0) return;
+            speakText(activeCardsList[currentCardIndex].kana);
+        }
+
+        function setCardCategory(cat) {
+            ['all', 'travel', 'social'].forEach(c => {
+                const btn = document.getElementById(`cat-${c}`);
+                if (btn) {
+                    btn.className = "flex-1 py-1 px-2 text-[10px] font-black rounded-md text-slate-950 dark:text-slate-300 hover:text-pink-600 cursor-pointer transition";
+                }
+            });
+            const activeBtn = document.getElementById(`cat-${cat}`);
+            if (activeBtn) {
+                activeBtn.className = "flex-1 py-1 px-2 text-[10px] font-black rounded-md bg-white dark:bg-slate-700 text-slate-950 dark:text-slate-100 shadow-sm cursor-pointer transition";
+            }
+
+            if(cat === 'all') {
+                activeCardsList = [...vocabularyCards];
+            } else {
+                activeCardsList = vocabularyCards.filter(item => item.cat === cat);
+            }
+            currentCardIndex = 0;
+            loadFlashcard();
+        }
+
+        // Canvas Confetti Particles
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const confettiCtx = confettiCanvas.getContext('2d');
+        let confettiParticles = [];
+
+        function resizeConfettiCanvas() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeConfettiCanvas);
+        resizeConfettiCanvas();
+
+        function triggerConfettiBurst() {
+            const colors = ['#f472b6', '#6366f1', '#10b981', '#3b82f6', '#f59e0b'];
+            for(let i = 0; i < 40; i++) {
+                confettiParticles.push({
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.8) * 12 - 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 6 + 4,
+                    alpha: 1,
+                    decay: Math.random() * 0.015 + 0.01
+                });
+            }
+        }
+
+        function updateConfetti() {
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            confettiParticles.forEach((p, idx) => {
+                confettiCtx.beginPath();
+                confettiCtx.fillStyle = p.color;
+                confettiCtx.globalAlpha = p.alpha;
+                confettiCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                confettiCtx.fill();
+                
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.2; // Gravity
+                p.alpha -= p.decay;
+
+                if(p.alpha <= 0) {
+                    confettiParticles.splice(idx, 1);
+                }
+            });
+            confettiCtx.globalAlpha = 1;
+            requestAnimationFrame(updateConfetti);
+        }
+        requestAnimationFrame(updateConfetti);
+
+        // Dojo Engines with Countdown Timer
+        function startQuizTimer() {
+            clearInterval(quizTimerInterval);
+            quizTimeLeft = 15;
+            
+            const timerLabel = document.getElementById('quiz-timer-label');
+            const timerBar = document.getElementById('quiz-timer-bar');
+            
+            if(timerLabel) timerLabel.innerText = `${quizTimeLeft}s`;
+            if(timerBar) timerBar.style.width = '100%';
+
+            quizTimerInterval = setInterval(() => {
+                quizTimeLeft--;
+                if(timerLabel) timerLabel.innerText = `${quizTimeLeft}s`;
+                
+                if(timerBar) {
+                    const percentage = (quizTimeLeft / 15) * 100;
+                    timerBar.style.width = `${percentage}%`;
+                }
+
+                if(quizTimeLeft <= 0) {
+                    clearInterval(quizTimerInterval);
+                    handleQuizTimeout();
+                }
+            }, 1000);
+        }
+
+        function handleQuizTimeout() {
+            currentStreak = 0;
+            playChimeEffect(false);
+            const streakCounter = document.getElementById('streak-counter');
+            if(streakCounter) streakCounter.innerText = `0 Hits`;
+            
+            const streakBar = document.getElementById('streak-bar');
+            if (streakBar) streakBar.style.width = "0%";
+            
+            loadNewQuizQuestion();
+        }
+
+        function loadNewQuizQuestion() {
+            let pools = [...hiraganaFull, ...katakanaFull];
+            currentQuizItem = pools[Math.floor(Math.random() * pools.length)];
+            
+            const questionEl = document.getElementById('quiz-question-text');
+            if (questionEl) {
+                questionEl.innerText = currentQuizItem.j;
+            }
+
+            let choices = [currentQuizItem.r];
+            while(choices.length < 4) {
+                let rItem = pools[Math.floor(Math.random() * pools.length)].r;
+                if(!choices.includes(rItem)) choices.push(rItem);
+            }
+            choices.sort(() => Math.random() - 0.5);
+
+            let optionsBox = document.getElementById('quiz-options-container');
+            if (optionsBox) {
+                optionsBox.innerHTML = '';
+                choices.forEach(opt => {
+                    let btn = document.createElement('button');
+                    btn.className = "bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 hover:border-pink-500 py-3 rounded-xl font-black text-sm text-slate-950 dark:text-slate-200 shadow-sm transition active:scale-95 cursor-pointer text-center hover:bg-slate-50 dark:hover:bg-slate-750";
+                    btn.innerText = opt.toUpperCase();
+                    btn.onclick = () => evaluateQuizAnswer(opt, btn);
+                    optionsBox.appendChild(btn);
+                });
+            }
+
+            // Reset countdown timer
+            startQuizTimer();
+        }
+
+        function evaluateQuizAnswer(selectedOpt, buttonEl) {
+            clearInterval(quizTimerInterval);
+            if(selectedOpt === currentQuizItem.r) {
+                score += 10;
+                currentStreak = Math.min(currentStreak + 1, 10);
+                playChimeEffect(true);
+                triggerConfettiBurst();
+                
+                document.getElementById('quiz-score').innerText = score;
+                document.getElementById('streak-counter').innerText = `${currentStreak} Hits`;
+                
+                const streakBar = document.getElementById('streak-bar');
+                if (streakBar) {
+                    streakBar.style.width = `${currentStreak * 10}%`;
+                }
+
+                buttonEl.className = "bg-gradient-to-r from-emerald-500 to-green-600 border-2 border-emerald-600 text-white py-3 rounded-xl font-black text-sm text-center transform scale-95 transition-all duration-150 shadow-md";
+                setTimeout(loadNewQuizQuestion, 850);
+            } else {
+                currentStreak = 0;
+                playChimeEffect(false);
+                
+                document.getElementById('streak-counter').innerText = `0 Hits`;
+                const streakBar = document.getElementById('streak-bar');
+                if (streakBar) {
+                    streakBar.style.width = "0%";
+                }
+
+                buttonEl.classList.add('animate-shake', 'bg-gradient-to-r', 'from-rose-500', 'to-red-600', 'border-rose-600', 'text-white');
+                setTimeout(() => {
+                    buttonEl.classList.remove('animate-shake', 'bg-gradient-to-r', 'from-rose-500', 'to-red-600', 'border-rose-600', 'text-white');
+                    // Resume timer after a mistake
+                    startQuizTimer();
+                }, 1000);
+            }
+        }
+
+        // Page Router
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-view').forEach(view => view.classList.add('hide'));
+            
+            const activePage = document.getElementById(`page-${pageId}`);
+            if(activePage) {
+                activePage.classList.remove('hide');
+            }
+
+            // Reset navigation menu selections
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-black text-slate-950 dark:text-slate-300 hover:bg-pink-50 dark:hover:bg-slate-800 hover:text-pink-600 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition";
+            });
+
+            const matchBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('href') === `#${pageId}`);
+            if(matchBtn) {
+                matchBtn.className = "nav-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-black bg-pink-50 text-pink-700 dark:bg-pink-900/35 dark:text-pink-300 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition";
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Initialize or clear canvas depending on page view change
+            if(pageId === 'syllabary') {
+                setTimeout(initDrawingCanvas, 100);
+            } else {
+                clearInterval(quizTimerInterval);
+            }
+            
+            if(pageId === 'dojo') {
+                startQuizTimer();
+            }
+        }
+
+        function handleHashRoute() {
+            const hash = location.hash.replace('#', '') || 'home';
+            if(['home', 'syllabary', 'flashcards', 'dojo'].includes(hash)) {
+                navigateTo(hash);
+            } else {
+                navigateTo('home');
+            }
+        }
+
+        window.addEventListener('hashchange', handleHashRoute);
+
+        // Printing Fallback workspace setup
+        function printWorkbook() {
+            const workbookElement = document.querySelector('.print-only');
+            if (!workbookElement) {
+                window.print();
+                return;
+            }
+            const workbookHTML = workbookElement.innerHTML;
+            
+            const printWin = window.open('', '_blank', 'width=1024,height=800,menubar=no,toolbar=no,location=no,status=no');
+            if (printWin) {
+                printWin.document.write(`
+                    <!DOCTYPE html>
+                    <html lang="ja">
+                    <head>
+                        <title>Kaizen Japanese - Calligraphy Tracing workbook</title>
+                        <meta charset="UTF-8">
+                        <script src="https://cdn.tailwindcss.com"><\/script>
+                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+                        <style>
+                            body {
+                                font-family: 'Inter', 'Noto Sans JP', sans-serif;
+                                background: white !important;
+                                color: black !important;
+                                padding: 40px;
+                            }
+                            .workbook-grid {
+                                display: grid !important;
+                                grid-template-columns: repeat(6, 1fr) !important;
+                                gap: 12px !important;
+                            }
+                            .workbook-square {
+                                border: 2px dashed #94a3b8 !important;
+                                height: 100px !important;
+                                display: flex !important;
+                                align-items: center !important;
+                                justify-content: center !important;
+                                position: relative;
+                            }
+                            .workbook-square::after {
+                                content: '';
+                                position: absolute;
+                                top: 50%;
+                                left: 0;
+                                right: 0;
+                                border-top: 1px dotted #cbd5e1;
+                            }
+                            .workbook-square::before {
+                                content: '';
+                                position: absolute;
+                                left: 50%;
+                                top: 0;
+                                bottom: 0;
+                                border-left: 1px dotted #cbd5e1;
+                            }
+                            .print-break {
+                                page-break-after: always;
+                            }
+                            @media print {
+                                body { padding: 0; }
+                                .no-print { display: none !important; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="no-print bg-indigo-50 border-l-4 border-indigo-500 p-4 mb-8 rounded-xl flex justify-between items-center shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-circle-info text-indigo-600 text-lg"></i>
+                                <p class="text-xs text-indigo-800 font-medium">
+                                    <strong>Practice Sheets Workspace:</strong> Use browser commands (<kbd class="bg-indigo-100 px-1 py-0.5 rounded border border-indigo-200">Ctrl+P</kbd> / <kbd class="bg-indigo-100 px-1 py-0.5 rounded border border-indigo-200">Cmd+P</kbd>) if dialog blocked.
+                                </p>
+                            </div>
+                            <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-md transition">
+                                <i class="fa-solid fa-print"></i> Launch Print Screen
+                            </button>
+                        </div>
+                        <div class="max-w-4xl mx-auto">
+                            ${workbookHTML}
+                        </div>
+                        <script>
+                            window.onload = function() {
+                                setTimeout(function() {
+                                    window.print();
+                                }, 600);
+                            };
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                printWin.document.close();
+            } else {
+                window.print();
+            }
+        }
+
+        // Falling Sakura ambient canvas particle looping
+        const canvas = document.getElementById('sakura-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let petals = Array.from({length: 22}, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            speed: Math.random() * 0.7 + 0.3,
+            size: Math.random() * 4 + 2,
+            swing: Math.random() * 2,
+            swingSpeed: Math.random() * 0.012 + 0.004
+        }));
+
+        function drawSakura() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(244, 143, 177, 0.45)";
+            
+            petals.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                p.y += p.speed;
+                p.swing += p.swingSpeed;
+                p.x += Math.sin(p.swing) * 0.25;
+
+                if (p.y > canvas.height) {
+                    p.y = -10;
+                    p.x = Math.random() * canvas.width;
+                }
+            });
+            requestAnimationFrame(drawSakura);
+        }
+        
+        window.onload = function() {
+            drawSakura();
+            
+            if (sessionStorage.getItem('audio_unlocked') === 'true') {
+                const unlocker = document.getElementById('audio-unlocker');
+                if (unlocker) {
+                    unlocker.classList.add('hide');
+                }
+            }
+
+            // Align dark class at boot depending on light/dark styling state
+            if (document.body.classList.contains('theme-dark')) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            
+            renderSyllabaryGrid();
+            loadFlashcard();
+            loadNewQuizQuestion();
+            calculateReadiness();
+            handleHashRoute();
+        };
+    </script>
+</body>
+</html>
